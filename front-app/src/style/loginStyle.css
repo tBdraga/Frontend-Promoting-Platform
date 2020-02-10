@@ -144,7 +144,6 @@ body,
     font-size: 16px;
 }
 
-//Password
 .password-state {
     display: flex;
     flex-direction: row;
@@ -171,4 +170,9 @@ body,
 
 .show {
     visibility: visible;
+}
+
+.val-error{
+    color: red;
+    font-size: 12px;
 }

@@ -111,53 +111,62 @@ class RegisterBox extends React.Component{
             passwordError:'',
             status:'NOT VERIFIED'
         };
+
         this.onChange = this.onChange.bind(this);
     }
 
     submitRegister(){
-        console.log("Register function");
-        //validation part
-        const err = this.validateFields();
-
-        if(!err){
-           // PostData('register', this.state).then ((result) =>{
-            //    let responseJSON = result;
-           //     console.log(responseJSON);
-           // });
-           console.log("SENDING REQUEST");
-        }else{
-            this.displayValidationErrors();
-        }
+        //Validation function call
+        this.validateFields(this.state.firstName,this.state.lastName,this.state.emailAddress,this.state.phoneNumber,this.state.username,this.state.password);
     }
 
-    displayValidationErrors(){
+    sendRequest(){
+        //user attributes
+        var fN = this.state.firstName;
+        var lN = this.state.lastName;
+        var eA = this.state.emailAddress;
+        var pN = this.state.phoneNumber;
+        var uN = this.state.username;
+        var pW = this.state.password;
+        var sT = this.state.status;
+
+        //constructing body that will be sent to be
+        var body = {firstName:fN,lastName:lN,emailAddress:eA,phoneNumber:pN,username:uN,password:pW,status:sT};
+        console.log(body);
+        PostData('register', body).then ((result) =>{
+            let responseJSON = result;
+            console.log(responseJSON);
+        });
+    }
+
+    displayValidationErrors(firstNameError,lastNameError,emailAddressError,phoneNumberError,usernameError,passwordError){
         /* 
         Function that displays the register input errors
         */
 
         //firstNameError
        this._firstNameError.focus();
-       this._firstNameError.innerHTML = this.state.firstNameError;
+       this._firstNameError.innerHTML = firstNameError;
 
        //lastNameError
        this._lastNameError.focus();
-       this._lastNameError.innerHTML = this.state.lastNameError;
+       this._lastNameError.innerHTML = lastNameError;
 
        //EMailError
        this._emailAddressError.focus();
-       this._emailAddressError.innerHTML = this.state.emailAddressError;
+       this._emailAddressError.innerHTML = emailAddressError;
 
        //PhoneError
        this._phoneNumberError.focus();
-       this._phoneNumberError.innerHTML = this.state.phoneNumberError;
+       this._phoneNumberError.innerHTML = phoneNumberError;
 
        //UsernameError
        this._usernameError.focus();
-       this._usernameError.innerHTML = this.state.usernameError;
+       this._usernameError.innerHTML = usernameError;
 
        //PasswordError
        this._passwordError.focus();
-       this._passwordError.innerHTML = this.state.passwordError;
+       this._passwordError.innerHTML = passwordError;
     }
 
     resetValidationErrors(){
@@ -188,88 +197,107 @@ class RegisterBox extends React.Component{
        //PasswordError
        this._passwordError.focus();
        this._passwordError.innerHTML = "";
+
+       this.setState({
+        firstNameError: '',
+        lastNameError: '',
+        emailAddressError: '',
+        phoneNumberError: '',
+        usernameError: '',
+        passwordError: ''
+        });
     }
 
-    validateFields(){
+    validateFields(firstName,lastName,emailAddress,phoneNumber,username,password){
+        console.log("In validate fields");
         /*
         Function that validates the input fields of the register form
         Fileds: First/Last Name, Email, Phone, Username, Password
         */
 
+        //error variables
+        var firstNameErr='', lastNameErr='', emailAddressErr='', phoneNumberErr='', usernameErr='', passwordErr='';
+
         //indicates if one or more field(s) contain(s) unsupported characters
         let isError = false;
 
         //regular expression variables
-        var regFirstName = /^[a-zA-Z]+ [a-zA-Z]+$/;
-        var regLastName = /^[a-zA-Z]+ [a-zA-Z]+$/;
-        var regEmail = /^(?:[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/;
-        var regPhone = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
-        var regUsername = /^[a-zA-Z0-9]+$/;
-        var regPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+        var regFirstName = RegExp('[a-zA-Z ]+');
+        var regLastName = RegExp('[a-zA-Z ]+');
+        var regEmail = RegExp(/^(?:[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/);
+        var regPhone = RegExp('[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}');
+        var regUsername = RegExp('[a-zA-Z0-9]+');
+        var regPassword = RegExp('(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,15}');
 
         //First Name validation
         if(this.state.firstName == ""){
             isError = true;
-            this.state.firstNameError = "First Name must be filled out.";
-        }else if(!regFirstName.test(this.state.firstName)){
+            firstNameErr = "First Name must be filled out.";
+        }else if(!regFirstName.test(firstName)){
             isError = true;
-            this.state.firstNameError = "First Name field contains unsupported characters.";
+            firstNameErr = "First Name field contains unsupported characters.";
         }
         else if(this.state.firstName.length > 25){
             isError = true;
-            this.state.firstNameError = "Maximum field length is 25 characters.";
+            firstNameErr = "Maximum field length is 25 characters.";
         }else if(this.state.firstName.length < 2){
             isError = true;
-            this.state.firstNameError = "Minimum field length must be 2 characters.";
+            firstNameErr = "Minimum field length must be 2 characters.";
         }
         
         //Last Name validation
         if(this.state.lastName == ""){
             isError = true;
-            this.state.lastNameError = "Last Name must be filled out.";
-        }else if(!regLastName.test(this.state.lastName)){
+            lastNameErr = "Last Name must be filled out.";
+        }else if(!regLastName.test(lastName)){
             isError = true;
-            this.state.lastNameError = "Last Name field contains unsupported characters.";
+            lastNameErr = "Last Name field contains unsupported characters.";
         }
         else if(this.state.lastName.length > 25){
             isError = true;
-            this.state.lastNameError = "Maximum field length is 25 characters.";
+            lastNameErr = "Maximum field length is 25 characters.";
         }else if(this.state.lastName.length < 2){
             isError = true;
-            this.state.lastNameError = "Minimum field length must be 2 characters.";
+            lastNameErr = "Minimum field length must be 2 characters.";
         }
 
         //E-Mail validation
-        if(!regEmail.test(this.state.emailAddress)){
+        if(!regEmail.test(emailAddress)){
             isError = true;
-            this.state.emailAddressError = "Email Address invalid.";
+            emailAddressErr = "Email Address invalid.";
         }
 
         //Phone validation
-        if(!regPhone.test(this.state.phoneNumber)){
+        if(!regPhone.test(phoneNumber)){
             isError = true;
-            this.state.phoneNumberError = "Phone Number invalid.";
+            phoneNumberErr = "Phone Number invalid.";
         }
 
         //Username validation
-        if(!regUsername.test(this.state.username)){
+        if(!regUsername.test(username)){
             isError = true;
-            this.state.usernameError = "Username contains invalid characters.";
+            usernameErr = "Username contains invalid characters.";
         }
 
         //Password validation, Minimum eight characters, at least one uppercase letter, one lowercase letter and one number
-        if(!regPassword.test(this.state.password)){
+        if(!regPassword.test(password)){
             isError = true;
-            this.state.passwordError = "Invalid password format.";
+            passwordErr = "Invalid password format.";
         }
 
         if(isError){
+            console.log("In isError test: " + firstNameErr + lastNameErr);
             this.setState({
-                ...this.state
-            });
+                firstNameError: firstNameErr,
+                lastNameError: lastNameErr,
+                emailAddressError: emailAddressErr,
+                phoneNumberError: phoneNumberErr,
+                usernameError: usernameErr,
+                passwordError: passwordErr
+            }, function(){this.displayValidationErrors(this.state.firstNameError,this.state.lastNameError,this.state.emailAddressError,this.state.phoneNumberError,this.state.usernameError,this.state.passwordError);}.bind(this));
+        }else{
+            this.sendRequest();
         }
-
-        return isError;
     }
 
     onChange(e){

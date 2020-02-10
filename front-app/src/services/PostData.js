@@ -1,4 +1,5 @@
 import { reject } from "q";
+import axios from 'axios';
 
 export function PostData(type, userData){
 
@@ -13,7 +14,7 @@ export function PostData(type, userData){
                 'Content-Type': 'application/json'
             }
         })
-        .then((response) => response.json())
+        .then((response) => localStorage.setItem('user-jwt', response.json()))
         .then((responseJson) => {
             resolve(responseJson)
         })
