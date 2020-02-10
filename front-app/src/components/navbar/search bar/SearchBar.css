@@ -1,0 +1,26 @@
+.search-bar{
+}
+
+.search-bar-input{
+    float: left;
+    border: none;
+    height: 25px;
+    width: 500px;
+    margin-top: auto;
+}
+
+.search-bar-input:focus{
+    outline: none;
+}
+
+.suggestion-list{
+    list-style-type: none;
+    position: absolute;
+    margin-top: 25px;
+    margin-left: 0px;
+    padding: 0;
+}
+
+.suggestion-list>li{
+    color: black;
+}
