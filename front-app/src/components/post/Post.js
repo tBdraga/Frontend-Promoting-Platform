@@ -6,10 +6,17 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardHeader from '@material-ui/core/CardHeader';
+import CardActions from '@material-ui/core/CardActions';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Collapse from '@material-ui/core/Collapse';
 import { Typography } from "@material-ui/core";
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import ShareIcon from '@material-ui/icons/Share';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 
 import Axios from "axios";
 
@@ -17,19 +24,30 @@ import Axios from "axios";
 import './Post.css';
 import { red } from "@material-ui/core/colors";
 import logo from '../../assets/logo.png';
+import MediaCarousel from "../carousel/MediaCarousel";
 
 const styles = {
     card: {
-        display: 'flex',
+        display: 'block',
         marginBottom: 20,
-        //maxWidth: 345
+        maxWidth: 550
     },
     content: {
-        padding: 25
+        padding: 25,
     },
     avatar: {
         backgroundColor: red[500],
-    }
+    },
+    /*expand: {
+        transform: 'rotate(0deg)',
+        marginLeft: 'auto',
+        transition: theme.transitions.create('transform', {
+            duration: theme.transitions.duration.shortest,
+        }),
+    },
+    expandOpen: {
+        transform: 'rotate(180deg)',
+    },*/
 }
 
 
@@ -39,7 +57,8 @@ class Post extends Component {
 
         this.state = {
             author: 'loading ... ',
-            postPictures: []
+            postPictures: [],
+            postDate: 'loading ... '
         };
     }
 
@@ -79,31 +98,20 @@ class Post extends Component {
             .catch(err => console.log(err));
     }
 
-    doLoadAuthor(post) {
-        return new Promise(function (resolve, reject) {
-
-            let getAuthorsUrl = '/users/' + post.idUser;
-
-            //get All Authors
-            Axios.get(getAuthorsUrl)
-                .then((res) => {
-                    var author = res.data;
-
-                    resolve(author);
-                })
-                .catch(err => console.log(err));
-        })
-    }
-
     render() {
+        dayjs.extend(relativeTime);
 
         const { classes } = this.props;
+
+        /*const handleExpandClick = () => {
+            setExpanded(!expanded);
+        };*/
 
         return (
             <Card className={classes.card}>
                 <CardHeader
                     avatar={
-                        <Avatar aria-label="recipe" className={classes.avatar}>
+                        <Avatar aria-label="recipe" className={classes.avatar} component={Link} to={`/users/${this.state.author.idUser}`}>
                             R
                         </Avatar>
                     }
@@ -112,21 +120,26 @@ class Post extends Component {
                             <MoreVertIcon />
                         </IconButton>
                     }
-                    title="zama de pizda"
-                    subheader="September 14, 2016"
+                    title={this.state.author.firstName + ' ' + this.state.author.lastName}
+                    subheader={dayjs(this.props.post.creationDate).fromNow()}
                 />
 
-                <CardMedia
-                    className={classes.media}
-                    image="/static/images/cards/paella.jpg"
-                    title="Paella dish"
-                />
-                
+                <MediaCarousel post={this.props.post}>
+                </MediaCarousel>
+
                 <CardContent className={classes.content}>
-                    <Typography variant="h5" component={Link} to={`/users/${this.state.author.idUser}`} color="primary">{this.state.author.firstName + ' ' + this.state.author.lastName}</Typography>
-                    <Typography variant="body2" color="textSecondary">{this.props.post.creationDate}</Typography>
                     <Typography variant="body1">{this.props.post.description}</Typography>
                 </CardContent>
+
+                <CardActions disableSpacing>
+                    <IconButton aria-label="add to favorites">
+                        <FavoriteIcon />
+                    </IconButton>
+
+                    <IconButton aria-label="share">
+                        <ShareIcon />
+                    </IconButton>
+                </CardActions>
             </Card>
         );
     }
