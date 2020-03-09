@@ -84,7 +84,7 @@ class Post extends Component {
 
     loadAuthor(post) {
 
-        let getAuthorsUrl = '/users/' + post.idUser;
+        let getAuthorsUrl = '/users/findById/' + post.idUser;
 
         //get All Authors
         Axios.get(getAuthorsUrl)
