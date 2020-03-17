@@ -5,6 +5,7 @@ import Axios from "axios";
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 import Post from '../components/post/Post.js';
+import Profie from '../components/profile/Profile.js';
 
 
 class Home extends Component {
@@ -88,7 +89,7 @@ class Home extends Component {
                     </InfiniteScroll>
                 </Grid>
                 <Grid item sm={4} xs={12}>
-                    <p>Profile ...</p>
+                    <Profie></Profie>
                 </Grid>
             </Grid>
         );

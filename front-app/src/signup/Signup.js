@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import withStyles from '@material-ui/core/styles/withStyles';
 import PropTypes from 'prop-types';
-import AppIcon from '../assets/logo.png';
-import axios from 'axios'
 import { Link } from 'react-router-dom';
 import DateFnsUtils from '@date-io/date-fns';
 
@@ -17,8 +15,10 @@ import {
     KeyboardTimePicker,
     KeyboardDatePicker,
 } from '@material-ui/pickers';
-//import KeyboardDatePicker from '@material-ui/pickers/DatePicker/DatePicker';
-//import MuiPickersUtilsProvider from '@material-ui/pickers/MuiPickersUtilsProvider';
+
+//Redux stuff
+import { connect } from 'react-redux';
+import { signupUser } from '../redux/actions/userActions';
 
 const styles = {
     form: {
@@ -56,46 +56,28 @@ class Signup extends Component {
             username: '',
             birthdate: new Date(),
             password: '',
-            loading: false,
             errors: {}
         };
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.UI.errors) {
+            this.setState({ errors: nextProps.UI.errors });
+        }
     }
 
     handleSubmit = (event) => {
         event.preventDefault();
 
-        this.setState({
-            loading: true
-        })
-
-
-
-        axios.post('/register', {
+        const userData = {
             firstName: this.state.firstName,
             lastName: this.state.lastName,
             emailAddress: this.state.emailAddress,
             username: this.state.username,
             password: this.state.password,
-        }).then(result => {
+        }
 
-            this.setState({
-                loading: false
-            })
-
-            let responseJSON = result;
-            localStorage.setItem('userJwt', responseJSON.data.jwtToken)
-
-            this.props.history.push('/');
-        })
-            .catch(err => {
-
-                console.log(err.response);
-
-                this.setState({
-                    errors: err.response.data,
-                    loading: false
-                })
-            });
+        this.props.signupUser(userData, this.props.history);
     }
 
     handleChange = (event) => {
@@ -106,9 +88,9 @@ class Signup extends Component {
 
     render() {
 
-        const { classes } = this.props;
+        const { classes, UI: { loading } } = this.props;
 
-        const { errors, loading } = this.state;
+        const { errors } = this.state;
 
         const { birthdate } = this.state;
 
@@ -121,7 +103,7 @@ class Signup extends Component {
                         Signup
                     </Typography>
 
-                    <form noVaidate onSubmit={this.handleSubmit}>
+                    <form noValidate onSubmit={this.handleSubmit}>
                         <Grid container spacing={3}>
                             <Grid item xs={6}>
                                 <TextField id="firstName" name="firstName" type="text" label="First Name" className={classes.textField} value={this.state.firstName} onChange={this.handleChange} fullWidth helperText={errors.usernameErrMessage} error={errors.usernameErrMessage ? true : false}></TextField>
@@ -156,11 +138,11 @@ class Signup extends Component {
                                 </MuiPickersUtilsProvider>
                             </Grid>
                         </Grid>
-                        
-                        <TextField id="emailAddress" name="emailAddress" type="email" label="Email" className={classes.textField} value={this.state.emailAddress} onChange={this.handleChange} fullWidth helperText={errors.usernameErrMessage} error={errors.usernameErrMessage ? true : false}></TextField>                        
 
-                        <TextField id="password" name="password" type="password" label="Password" className={classes.textField} value={this.state.password} onChange={this.handleChange} fullWidth helperText={errors.passwordErrMessage} error={errors.passwordErrMessage ? true : false}></TextField>                        
-                        
+                        <TextField id="emailAddress" name="emailAddress" type="email" label="Email" className={classes.textField} value={this.state.emailAddress} onChange={this.handleChange} fullWidth helperText={errors.usernameErrMessage} error={errors.usernameErrMessage ? true : false}></TextField>
+
+                        <TextField id="password" name="password" type="password" label="Password" className={classes.textField} value={this.state.password} onChange={this.handleChange} fullWidth helperText={errors.passwordErrMessage} error={errors.passwordErrMessage ? true : false}></TextField>
+
                         {errors.generalErrMessage && (
                             <Typography variant="body2" className={classes.customError}>
                                 {errors.generalErrMessage}
@@ -190,7 +172,19 @@ class Signup extends Component {
 }
 
 Signup.propTypes = {
-    classes: PropTypes.object.isRequired
+    classes: PropTypes.object.isRequired,
+    signupUser: PropTypes.func.isRequired,
+    user: PropTypes.object.isRequired,
+    UI: PropTypes.object.isRequired
 }
 
-export default withStyles(styles)(Signup);
+const mapStateToProps = (state) => ({
+    user: state.user,
+    UI: state.UI
+});
+
+const mapActionsToProps = {
+    signupUser
+}
+
+export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(Signup));

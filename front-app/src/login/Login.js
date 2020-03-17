@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import withStyles from '@material-ui/core/styles/withStyles';
 import PropTypes from 'prop-types';
-import AppIcon from '../assets/logo.png';
-import axios from 'axios'
 import { Link } from 'react-router-dom';
 
 //MUI stuff
@@ -90,7 +88,7 @@ class Login extends Component {
                         Login
                     </Typography>
 
-                    <form noVaidate onSubmit={this.handleSubmit}>
+                    <form noValidate onSubmit={this.handleSubmit}>
                         <TextField id="username" name="username" type="text" label="Username" className={classes.textField} value={this.state.username} onChange={this.handleChange} fullWidth helperText={errors.usernameErrMessage} error={errors.usernameErrMessage ? true : false}></TextField>
                         <TextField id="password" name="password" type="password" label="Password" className={classes.textField} value={this.state.password} onChange={this.handleChange} fullWidth helperText={errors.passwordErrMessage} error={errors.passwordErrMessage ? true : false}></TextField>
 

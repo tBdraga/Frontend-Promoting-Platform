@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import './style/loginStyle.css';
-import Authentication from './authentication/Authentication';
 import App from './App'
 import * as serviceWorker from './serviceWorker';
 import { importSpecifier } from '@babel/types';
