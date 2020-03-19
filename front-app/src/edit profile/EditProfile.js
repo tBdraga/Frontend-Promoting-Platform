@@ -7,6 +7,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 
 //components
 import Post from '../components/post/Post.js';
+import EditDetails from '../components/edit profile details/EditDetails';
 
 //CSS
 import './EditProfile.css';
@@ -16,10 +17,15 @@ import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper/Paper';
 import MuiLink from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
-import { Grid } from "@material-ui/core";
+import { Grid, IconButton, Icon } from "@material-ui/core";
+import Tooltip from '@material-ui/core/Tooltip';
+
+//icons
+import EditIcon from '@material-ui/icons/Edit';
 
 //redux
 import { connect } from 'react-redux';
+import {changeProfilePicture} from '../redux/actions/userActions';
 
 const styles = (theme) => ({
     paper: {
@@ -77,10 +83,11 @@ class EditProfile extends Component {
         posts: [],
         startPosition: 0,
         step: 3,
-        hasMore: true
+        hasMore: true,
     }
 
     componentWillReceiveProps(nextProps) {
+
         if (nextProps.user) {
             this.fetchInitialPosts(nextProps.user);
         }
@@ -128,7 +135,7 @@ class EditProfile extends Component {
                     step: step
                 }
             })
-                .then((res,miau) => {
+                .then((res, miau) => {
                     let posts = res.data
 
                     if (posts) {
@@ -149,6 +156,21 @@ class EditProfile extends Component {
         }
     }
 
+    handleImageChange = (event) => {
+        const image = event.target.files[0];
+        const profilePicture = new FormData();
+
+        profilePicture.append('profilePicture', image, image.name);
+
+        this.props.changeProfilePicture(profilePicture, this.props.user.idUser);
+    }
+
+    handleEditPicture = () => {
+        const fileInput = document.getElementById('imageInput');
+
+        fileInput.click();
+    }
+
     render() {
 
         const { classes, user: { username, firstName, lastName, idUser, profileDescription, profilePicture, loading, authenticated } } = this.props;
@@ -162,6 +184,14 @@ class EditProfile extends Component {
                 <div className={classes.profile}>
                     <div className="image-wrapper">
                         <img src={`data:image/jpeg;base64,${profilePicture}`} alt="profile" className="profile-image"></img>
+
+                        <input type="file" id="imageInput" onChange={this.handleImageChange} hidden="hidden"></input>
+
+                        <Tooltip title="Change Picture" placement="top">
+                            <IconButton onClick={this.handleEditPicture} className="button">
+                                <EditIcon color="primary"></EditIcon>
+                            </IconButton>
+                        </Tooltip>
                     </div>
 
                     <hr></hr>
@@ -178,6 +208,8 @@ class EditProfile extends Component {
                         <hr></hr>
 
                         {profileDescription && <Typography variant="body2" >{profileDescription}</Typography>}
+
+                        <EditDetails></EditDetails>
 
                     </div>
                 </div>
@@ -212,9 +244,12 @@ const mapStateToProps = (state) => ({
     user: state.user
 })
 
+const mapActionsToPros = {changeProfilePicture};
+
 EditProfile.propTypes = {
+    changeProfilePicture: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired
 }
 
-export default connect(mapStateToProps)(withStyles(styles)(EditProfile));
+export default connect(mapStateToProps, mapActionsToPros)(withStyles(styles)(EditProfile));

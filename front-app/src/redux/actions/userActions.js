@@ -72,6 +72,30 @@ export const getUserData = () => (dispatch) => {
         .catch(err => console.log(err))
 };
 
+export const changeProfilePicture = (profilePicture, idUser) => (dispatch) => {
+    dispatch({ type: LOADING_USER });
+
+    const url = '/users/changeProfilePicture/' + idUser;
+
+    axios.post(url, profilePicture)
+        .then(() => {
+            dispatch(getUserData());
+        })
+        .catch(err => console.log(err))
+}
+
+export const editUserDetails = (userDetails, idUser) => (dispatch) => {
+    dispatch({ type: LOADING_USER });
+
+    const url = '/users/updateUserDetails/' + idUser;
+
+    axios.post(url, userDetails)
+        .then(() => {
+            dispatch(getUserData());
+        })
+        .catch(err => console.log(err))
+}
+
 const setAuthorizationHeader = (token) => {
     const jwtToken = `Bearer ${token}`;
 
