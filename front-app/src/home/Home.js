@@ -3,97 +3,108 @@ import React, { Component } from "react";
 import Grid from '@material-ui/core/Grid';
 import Axios from "axios";
 import InfiniteScroll from 'react-infinite-scroll-component';
+import PropTypes from 'prop-types';
 
+//Components
 import Post from '../components/post/Post.js';
 import Profie from '../components/profile/Profile.js';
+import Dashboard from '../components/dashboard/Dashboard.js';
 
+import { connect } from 'react-redux';
+import { getPostsPaginated } from '../redux/actions/dataActions';
 
 class Home extends Component {
     state = {
-        posts: [],
+        idUser: null,
+        userRole: '',
         startPosition: 0,
         step: 3,
         hasMore: true
     }
 
     componentDidMount() {
-        //get initial Posts
-        this.fetchInitialPosts();
+        //load initial Posts
+        this.fetchPostRecommendations();
     }
 
-    fetchInitialPosts() {
-        let startPosition = this.state.startPosition;
-        let step = this.state.step;
-
-        //get initial Posts
-        Axios.post('/users/getPostRecommendationsPaginated/2', null, {
-            params: {
-                startPosition: startPosition,
-                step: step
-            }
-        })
-            .then((res) => {
-                let posts = res.data
-
-                this.setState({
-                    posts: posts,
-                });
+    componentWillReceiveProps(nextProps){
+        if(nextProps.user){
+            this.setState({
+                idUser: nextProps.user.idUser,
+                userRole: nextProps.user.userRole
             })
-            .catch(err => console.log(err));
+            console.log('miau miau', nextProps.user.userRole);
+        }
     }
 
-    fetchNextPosts = () => {
-        let step = this.state.step;
-        let currentStartPosition = this.state.startPosition;
+    fetchPostRecommendations(){
+        let startPosition = this.props.data.currentIndex;
+        let step = this.props.data.step;
 
-        let newStartPosition = currentStartPosition + step;
-
-        //get new Posts
-        Axios.post('/users/getPostRecommendationsPaginated/2', null, {
-            params: {
-                startPosition: newStartPosition,
-                step: step
-            }
-        })
-            .then((res) => {
-                let posts = res.data
-
-                if (posts) {
-                    this.setState({
-                        //append new Posts
-                        posts: this.state.posts.concat(posts),
-                        startPosition: newStartPosition
-                    });
-                }else{
-                    this.setState({
-                        hasMore: false
-                    });
-
-                    return;
-                }
+        let url = '/users/getPostRecommendationsPaginated/' + this.props.user.idUser;
+        
+        if(this.props.data.hasMore){
+            this.props.getPostsPaginated(url, startPosition, step);
+        }else{
+            this.setState({
+                hasMore: false
             })
-            .catch(err => console.log(err));
+        }
+    }
+
+    fetchNextPostRecommendations = () =>{
+        //check if more posts are available
+        if(this.state.startPosition >= this.props.data.posts.length){
+
+            //request new posts
+            this.fetchPostRecommendations();
+        }else{
+            this.setState({
+                startPosition: this.state.startPosition + this.state.step
+            })
+        }
     }
 
     render() {
-        let recentPostsMarkup = this.state.posts ? (
-            this.state.posts.map(post => <Post post={post}></Post>)
+        const { posts, loading } = this.props.data;
+
+        let recentPostsMarkup = !loading ? (
+            posts.slice(0, this.state.startPosition + this.state.step).map(post => <Post post={post}></Post>)
         ) : <p></p>
 
         return (
             <Grid container spacing={10}>
 
                 <Grid item sm={5} xs={10}>
-                    <InfiniteScroll dataLength={this.state.posts.length} next={this.fetchNextPosts} hasMore={this.state.hasMore} loader={<h4>Loading ...</h4>} endMessage={<p><b>No more posts :(</b></p>}>
+                    <InfiniteScroll dataLength={posts.length} next={this.fetchNextPostRecommendations} hasMore={this.state.hasMore} loader={<h4>Loading ...</h4>} endMessage={<p><b>No more posts :(</b></p>}>
                         {recentPostsMarkup}
                     </InfiniteScroll>
                 </Grid>
-                <Grid item sm={4} xs={12}>
+                <Grid item sm={7} xs={12}>
                     <Profie></Profie>
+
+                    {' '}
+
+                    <Dashboard></Dashboard>
                 </Grid>
             </Grid>
         );
     }
 }
 
-export default Home;
+const mapStateToProps = (state) => ({
+    data: state.data,
+    user: state.user
+})
+
+const mapActionsToProps = {
+    getPostsPaginated
+}
+
+Home.propTypes = {
+    getPostsPaginated: PropTypes.func.isRequired,
+    data: PropTypes.object.isRequired,
+    user: PropTypes.object.isRequired
+}
+
+export default connect(mapStateToProps, mapActionsToProps)((Home));

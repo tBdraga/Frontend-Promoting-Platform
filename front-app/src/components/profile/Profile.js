@@ -20,7 +20,7 @@ import { connect } from 'react-redux';
 
 const styles = (theme) => ({
     paper: {
-        padding: 20
+        padding: 20,
     },
     profile: {
         '& .image-wrapper': {

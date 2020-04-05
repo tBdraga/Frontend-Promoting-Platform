@@ -1,68 +1,120 @@
 import React, { Component } from "react";
+import PropTypes from 'prop-types';
+import withStyles from '@material-ui/core/styles/withStyles'
+import { Link } from 'react-router-dom';
 
 //CSS
 import './SearchBar.css';
 
+//MUI stuff
+import TextField from '@material-ui/core/TextField';
+import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import Divider from '@material-ui/core/Divider';
+
+//redux
+import { connect } from 'react-redux';
+import { getUserSearchSuggestions } from '../../../redux/actions/dataActions';
+
+//icons
+import SearchIcon from '@material-ui/icons/Search';
+
+//Components
+import SearchSuggestion from '../../user search suggestion/SearchSuggestion';
+
+const styles = {
+    textField: {
+        margin: '10px auto 10px auto'
+    },
+    customError: {
+        color: 'red',
+        fontSize: '0.8rem'
+    },
+    progress: {
+        position: 'relative',
+        right: '90px',
+        top: '12px'
+    },
+    textField: {
+        width: '500px',
+    },
+    unsortedList: {
+        position: 'absolute',
+    },
+    listItem: {
+        width: '500px'
+    }
+}
+
 class SearchBar extends Component {
     constructor(props) {
         super(props);
-        this.items = [
-            'David',
-            'Miau miau',
-            'Sara',
-            'Justinian Augustinian',
-            'Justinian Augustinian2',
-            'Justinian Augustinian3',
-            'Justinian Augustinian4',
-            'Justinian Augustinian5'
-        ];
-
         this.state = {
-            suggestions: [],
-            text: '',
+            searchString: ''
         };
     }
 
-    onTextChanged = (e) => {
-        const value = e.target.value;
-
-        let suggestions = [];
-
-        if (value.length > 0) {
-            const regex = new RegExp(`^${value}`, 'i');
-            suggestions = this.items.sort().filter(v => regex.test(v));
-        }
-
-        this.setState(() => ({ suggestions, text: value }));
-    }
-
-    suggestionSelected(value){
-        this.setState(() => ({
-            text: value,
-            suggestions: []
-        }))
+    suggestionSelected(userSearchSuggestion) {
+        this.setState({
+            searchString: ''
+        })
     }
 
     renderSuggestions() {
-        const { suggestions } = this.state;
+        const { classes, data: { userSearchSuggestions, loadingSearchSuggestion } } = this.props;
 
-        if (suggestions.length === 0) {
-            return null;
+        if (!loadingSearchSuggestion && this.state.searchString) {
+            return (
+                <List className={classes.unsortedList}>
+                    {userSearchSuggestions.map((userSearchSuggestion) => <ListItem className={classes.listItem} button onClick={() => this.suggestionSelected(userSearchSuggestion)}><SearchSuggestion searchSuggestion={userSearchSuggestion}></SearchSuggestion></ListItem>)}
+                </List>
+            );
+        } else {
+            return (
+                <p></p>
+            );
         }
 
-        return (
-            <ul className="suggestion-list">
-                {suggestions.map((item) => <li onClick={() => this.suggestionSelected(item)}>{item}</li>)}
-            </ul>
-        );
+    }
+
+    handleOnInputChange = (event) => {
+        const searchString = event.target.value;
+
+        this.setState({
+            searchString: searchString
+        })
+
+        this.fetchSearchSuggestions(this.state.searchString);
+    }
+
+    fetchSearchSuggestions = (searchString) => {
+        this.props.getUserSearchSuggestions(searchString);
+    }
+
+    handleOnSearch = (event) => {
+
     }
 
     render() {
-        const { text } = this.state;
+        const { text, searchString } = this.state;
+
+        const { classes, data: { loadingSearchSuggestion } } = this.props;
 
         return (
             <div className="search-bar">
-                <input className="search-bar-input" value={text} onChange={this.onTextChanged} type="text"></input>
+                <TextField value={searchString} id="outlined-search" label="Search users or brands" type="search" variant="outlined" className={classes.textField} onChange={this.handleOnInputChange} />
+
+                <Tooltip title="Complete Search" placement="bottom">
+                    <IconButton  onClick={this.handleOnSearch} className={classes.button}>
+                        <SearchIcon></SearchIcon>
+                    </IconButton>
+                </Tooltip>
+
+                {loadingSearchSuggestion && (<CircularProgress className={classes.progress} size={35}></CircularProgress>)}
+
                 {this.renderSuggestions()}
             </div>
         )
@@ -70,4 +122,22 @@ class SearchBar extends Component {
 
 }
 
-export default SearchBar;
+const mapStateToProps = (state) => ({
+    user: state.user,
+    UI: state.UI,
+    data: state.data,
+})
+
+const mapActionsToProps = {
+    getUserSearchSuggestions
+}
+
+SearchBar.propTypes = {
+    user: PropTypes.object.isRequired,
+    menu: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired,
+    getUserSearchSuggestions: PropTypes.func.isRequired,
+    data: PropTypes.object.isRequired,
+}
+
+export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(SearchBar));

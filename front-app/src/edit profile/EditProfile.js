@@ -86,10 +86,18 @@ class EditProfile extends Component {
         hasMore: true,
     }
 
-    componentWillReceiveProps(nextProps) {
+    /*componentWillReceiveProps(nextProps) {
 
         if (nextProps.user) {
             this.fetchInitialPosts(nextProps.user);
+        }
+    }*/
+
+    componentDidMount(){
+        const {user} = this.props;
+
+        if(user){
+            this.fetchInitialPosts(user)
         }
     }
 
