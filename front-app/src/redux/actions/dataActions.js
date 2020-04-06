@@ -1,4 +1,4 @@
-import { SET_POSTS, LOADING_DATA, LIKE_POST, UNLIKE_POST, NO_MORE_DATA, DELETE_POST, CLEAR_ERRORS, SET_ERRORS, CREATE_POST, LOADING_UI, SET_USER_SEARCH_SUGGESTIONS, LOADING_SEARCH_SUGGESTION_DATA } from '../types';
+import { SET_POSTS, LOADING_DATA, LIKE_POST, UNLIKE_POST, NO_MORE_DATA, DELETE_POST, CLEAR_ERRORS, SET_ERRORS, CREATE_POST, LOADING_UI, SET_USER_SEARCH_SUGGESTIONS, LOADING_SEARCH_SUGGESTION_DATA, LOADING_SEARCH_RESULT_DATA, SET_USER_SEARCH_RESULTS, CLEAR_USER_SEARCH_SUGGESTIONS } from '../types';
 import axios from 'axios';
 
 export const getPostsPaginated = (url, startPosition, step) => (dispatch) => {
@@ -122,4 +122,27 @@ export const getUserSearchSuggestions = (searchString) => (dispatch) => {
                 type: SET_USER_SEARCH_SUGGESTIONS,
                 payload: []
             }))
+}
+
+export const getUserSearchResult = (searchString) => (dispatch) => {
+    dispatch({ type: LOADING_SEARCH_RESULT_DATA });
+
+    const url = '/users/findUsersByNameContaining/' + searchString;
+
+    axios.get(url)
+        .then(res => {
+            dispatch({
+                type: SET_USER_SEARCH_RESULTS,
+                payload: res.data
+            })
+        })
+        .catch(err =>
+            dispatch({
+                type: SET_USER_SEARCH_RESULTS,
+                payload: []
+            }))
+}
+
+export const clearSearchSuggestions =() => (dispatch) => {
+    dispatch({ type: CLEAR_USER_SEARCH_SUGGESTIONS });
 }

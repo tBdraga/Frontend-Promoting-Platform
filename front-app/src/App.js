@@ -24,6 +24,7 @@ import Login from './login/Login';
 import Signup from './signup/Signup';
 import EditProfile from './edit profile/EditProfile';
 import Dashboard from './components/dashboard/Dashboard';
+import SearchResultsPage from './search results/SearchResultsPage';
 
 const theme = createMuiTheme({
   palette: {
@@ -69,6 +70,7 @@ function App() {
               <AuthRoute exact path="/login" component={Login} ></AuthRoute>
               <AuthRoute exact path="/signup" component={Signup} ></AuthRoute>
               <Route exact path="/editProfile" component={EditProfile} ></Route>
+              <Route exact path="/searchResult" component={SearchResultsPage} ></Route>
               <Route exact path="/dashboard" component={Dashboard} ></Route>
             </Switch>
           </div>

@@ -17,7 +17,7 @@ import Divider from '@material-ui/core/Divider';
 
 //redux
 import { connect } from 'react-redux';
-import { getUserSearchSuggestions } from '../../../redux/actions/dataActions';
+import { getUserSearchSuggestions, getUserSearchResult } from '../../../redux/actions/dataActions';
 
 //icons
 import SearchIcon from '@material-ui/icons/Search';
@@ -95,7 +95,13 @@ class SearchBar extends Component {
     }
 
     handleOnSearch = (event) => {
+        const searchString = this.state.searchString;
 
+        this.setState({
+            searchString: ''
+        });
+
+        this.props.getUserSearchResult(searchString);
     }
 
     render() {
@@ -108,7 +114,7 @@ class SearchBar extends Component {
                 <TextField value={searchString} id="outlined-search" label="Search users or brands" type="search" variant="outlined" className={classes.textField} onChange={this.handleOnInputChange} />
 
                 <Tooltip title="Complete Search" placement="bottom">
-                    <IconButton  onClick={this.handleOnSearch} className={classes.button}>
+                    <IconButton  onClick={this.handleOnSearch} className={classes.button} component={Link} to="/searchResult">
                         <SearchIcon></SearchIcon>
                     </IconButton>
                 </Tooltip>
@@ -129,7 +135,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapActionsToProps = {
-    getUserSearchSuggestions
+    getUserSearchSuggestions,
+    getUserSearchResult
 }
 
 SearchBar.propTypes = {
@@ -137,6 +144,7 @@ SearchBar.propTypes = {
     menu: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
     getUserSearchSuggestions: PropTypes.func.isRequired,
+    getUserSearchResult: PropTypes.func.isRequired,
     data: PropTypes.object.isRequired,
 }
 

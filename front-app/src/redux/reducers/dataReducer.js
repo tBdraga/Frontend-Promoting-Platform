@@ -1,6 +1,8 @@
-import {SET_POSTS, LIKE_POST, UNLIKE_POST, LOADING_DATA, NO_MORE_DATA, DELETE_POST, CREATE_POST, SET_USER_SEARCH_SUGGESTIONS, LOADING_SEARCH_SUGGESTION_DATA} from '../types';
+import {SET_POSTS, LIKE_POST, UNLIKE_POST, LOADING_DATA, NO_MORE_DATA, DELETE_POST, CREATE_POST, SET_USER_SEARCH_SUGGESTIONS, LOADING_SEARCH_SUGGESTION_DATA, LOADING_SEARCH_RESULT_DATA, SET_USER_SEARCH_RESULTS, CLEAR_USER_SEARCH_SUGGESTIONS} from '../types';
 
 const initialState = {
+    userSearchResult:[],
+    loadingSearchResult: false,
     userSearchSuggestions: [],
     loadingSearchSuggestion: false,
     posts: [],
@@ -22,6 +24,11 @@ export default function(state = initialState, action){
             return {
                 ...state,
                 loadingSearchSuggestion: true
+            }
+        case LOADING_SEARCH_RESULT_DATA:
+            return{
+                ...state,
+                loadingSearchResult: true
             }
         case SET_POSTS:
             return{
@@ -62,6 +69,17 @@ export default function(state = initialState, action){
                 ...state,
                 userSearchSuggestions: action.payload,
                 loadingSearchSuggestion: false,
+            }
+        case SET_USER_SEARCH_RESULTS:
+            return{
+                ...state,
+                userSearchResult: action.payload,
+                loadingSearchResult: false
+            }
+        case CLEAR_USER_SEARCH_SUGGESTIONS:
+            return{
+                ...state,
+                userSearchSuggestions: []
             }
         default:
             return state;
