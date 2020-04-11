@@ -48,7 +48,7 @@ class SearchResultsPage extends Component {
         const { data: { userSearchResult, loadingSearchResult } } = this.props;
 
         let userSearchResultMarkup = !loadingSearchResult && userSearchResult ? (
-            userSearchResult.map(user => <SearchResult user={user}></SearchResult>)
+            userSearchResult.map(searchResult => <SearchResult searchResult={searchResult}></SearchResult>)
         ) : <p>No available results :(</p>
 
         return (

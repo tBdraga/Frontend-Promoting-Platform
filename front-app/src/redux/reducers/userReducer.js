@@ -1,4 +1,4 @@
-import { SET_USER, SET_ERRORS, CLEAR_ERRORS, LOADING_UI, SET_AUTHENTICATED, SET_UNAUTHENTICATED, LOADING_USER, LIKE_POST, UNLIKE_POST} from '../types';
+import { SET_USER, SET_ERRORS, CLEAR_ERRORS, LOADING_UI, SET_AUTHENTICATED, SET_UNAUTHENTICATED, LOADING_USER, LIKE_POST, UNLIKE_POST, FOLLOW_USER, UNFOLLOW_USER} from '../types';
 
 const initialState = {
     authenticated: false,
@@ -6,7 +6,8 @@ const initialState = {
     credentials: {},
     likes: [],
     idUser: 2,
-    //notifications: []
+    followerList: [],
+    followingList: []
 }
 
 export default function( state = initialState, action){
@@ -54,6 +55,26 @@ export default function( state = initialState, action){
                 ...state,
                 likes: state.likes.filter(
                     (like) => like.idPost !== action.payload.idPost
+                )
+            };
+        case FOLLOW_USER:
+            return{
+                ...state,
+                followingList: [
+                    ...state.followingList,
+                    {
+                        idUser: action.payload.idUser,
+                        username: action.payload.username,
+                        firstName: action.payload.firstName,
+                        lastName: action.payload.lastName
+                    }
+                ]
+            };
+        case UNFOLLOW_USER:
+            return{
+                ...state,
+                followingList: state.followingList.filter(
+                    (followedUser) => followedUser.idUser !== action.payload.idUser
                 )
             };
         default:

@@ -1,4 +1,4 @@
-import { SET_USER, SET_ERRORS, CLEAR_ERRORS, LOADING_UI, SET_UNAUTHENTICATED, LOADING_USER } from '../types';
+import { SET_USER, SET_ERRORS, CLEAR_ERRORS, LOADING_UI, SET_UNAUTHENTICATED, LOADING_USER, FOLLOW_USER, UNFOLLOW_USER } from '../types';
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 
@@ -103,3 +103,41 @@ const setAuthorizationHeader = (token) => {
 
     axios.defaults.headers.common['Authorization'] = jwtToken;
 };
+
+export const followUser = (idUserFrom, idUserTo) => (dispatch) =>{
+    const url ='/relationship/followUser'
+
+    const followDetails = {
+        idUserFrom: idUserFrom,
+        idUserTo: idUserTo,
+    };
+
+    axios.post(url, followDetails)
+        .then(res => {
+            dispatch({
+                type: FOLLOW_USER,
+                payload: res.data
+            })
+        }
+        )
+        .catch(err => console.log(err))
+}
+
+export const unfollowUser = (idUserFrom, idUserTo) => (dispatch) =>{
+    const url ='/relationship/unfollowUser'
+
+    const followDetails = {
+        idUserFrom: idUserFrom,
+        idUserTo: idUserTo,
+    };
+
+    axios.delete(url, followDetails)
+        .then(res => {
+            dispatch({
+                type: UNFOLLOW_USER,
+                payload: res.data
+            })
+        }
+        )
+        .catch(err => console.log(err))
+}

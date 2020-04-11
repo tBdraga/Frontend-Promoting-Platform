@@ -27,7 +27,7 @@ const styles = (theme) => ({
             textAllign: 'center',
             position: 'relative',
             '& button': {
-                position: 'absolute',
+                position: 'relative',
                 top: '80%',
                 left: '70%'
             }
@@ -61,6 +61,12 @@ const styles = (theme) => ({
             }
         }
     },
+    followersBtn: {
+        padding: '10px'
+    },
+    followingBtn: {
+        padding: '10px'
+    },
     buttons: {
         textAllign: 'center',
         '& a': {
@@ -73,13 +79,21 @@ class Profile extends Component {
 
     render() {
 
-        const { classes, user: { username, firstName, lastName, idUser, profileDescription, profilePicture, loading, authenticated } } = this.props;
+        const { classes, user: { username, firstName, lastName, idUser, profileDescription, profilePicture, loading, authenticated, followingCount, followerCount } } = this.props;
 
         let profileMarkup = !loading ? (authenticated ? (
             <Paper className={classes.paper}>
                 <div className={classes.profile}>
                     <div className="image-wrapper">
                         <img src={`data:image/jpeg;base64,${profilePicture}`} alt="profile" className="profile-image"></img>
+
+                        <Button size="medium" className={classes.followersBtn}>
+                            {followerCount+' followers'}
+                        </Button>
+
+                        <Button size="medium" className={classes.followingBtn}>
+                            {followingCount+' following'}
+                        </Button>
                     </div>
 
                     <hr></hr>
