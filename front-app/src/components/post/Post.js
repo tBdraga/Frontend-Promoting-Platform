@@ -27,7 +27,7 @@ import ChatIcon from '@material-ui/icons/Chat';
 
 //redux stuff
 import { connect } from 'react-redux';
-import { likePost, unlikePost } from '../../redux/actions/dataActions';
+import { likePost, unlikePost,  getPostComments} from '../../redux/actions/dataActions';
 import { openPostMenu } from '../../redux/actions/menuActions';
 
 //CSS
@@ -38,6 +38,7 @@ import logo from '../../assets/logo.png';
 //components
 import MediaCarousel from "../carousel/MediaCarousel";
 import PostMenu from '../post menu/PostMenu';
+import CommentSection from '../comment section/CommentSection';
 
 const styles = {
     card: {
@@ -71,7 +72,8 @@ class Post extends Component {
         this.state = {
             author: 'loading ... ',
             postPictures: [],
-            postDate: 'loading ... '
+            postDate: 'loading ... ',
+            drawerIsOpen: false
         };
     }
 
@@ -139,10 +141,18 @@ class Post extends Component {
         this.props.closePostMenu();
     }
 
+    openCommentsDrawer = () =>{
+        this.props.getPostComments(this.props.post.idPost);
+
+        this.setState({
+            drawerIsOpen: true
+        })
+    }
+
     render() {
         dayjs.extend(relativeTime);
 
-        const { classes, user: { authenticated, profilePicture }, post: { likes, idPost } } = this.props;
+        const { classes, user: { authenticated, profilePicture }, post: { likes, idPost, comments } } = this.props;
 
         const likeButton = !authenticated ? (
             <Tooltip title={likes + ' likes'} placement="top">
@@ -199,7 +209,7 @@ class Post extends Component {
                     {likeButton}
 
                     <Tooltip title="Load Comments" placement="top">
-                        <IconButton aria-label="comments">
+                        <IconButton aria-label="comments" onClick={this.openCommentsDrawer}>
                             <ChatIcon color="primary" />
                         </IconButton>
                     </Tooltip>
@@ -209,6 +219,8 @@ class Post extends Component {
                         <ShareIcon color="primary" />
                     </IconButton>
                 </CardActions>
+
+                <CommentSection isOpen={this.state.drawerIsOpen} idPost={this.props.post.idPost}></CommentSection>
             </Card>
         );
     }
@@ -220,13 +232,15 @@ const mapStateToProps = (state) => ({
 const mapActionsToProps = {
     likePost,
     unlikePost,
-    openPostMenu
+    openPostMenu,
+    getPostComments
 }
 
 Post.propTypes = {
     likePost: PropTypes.func.isRequired,
     unlikePost: PropTypes.func.isRequired,
     openPostMenu: PropTypes.func.isRequired,
+    getPostComments: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
     menu: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired

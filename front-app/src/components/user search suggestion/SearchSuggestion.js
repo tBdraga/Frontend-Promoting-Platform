@@ -38,6 +38,7 @@ class SearchSuggestion extends Component {
 
     unfollowUser = () => {
         this.props.unfollowUser(this.props.user.idUser, this.props.searchSuggestion.idUser);
+        console.log(this.props.user.idUser,this.props.searchSuggestion.idUser);
     }
 
     render() {

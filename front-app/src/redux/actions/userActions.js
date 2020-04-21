@@ -104,15 +104,15 @@ const setAuthorizationHeader = (token) => {
     axios.defaults.headers.common['Authorization'] = jwtToken;
 };
 
-export const followUser = (idUserFrom, idUserTo) => (dispatch) =>{
-    const url ='/relationship/followUser'
+export const followUser = (idUserFrom, idUserTo) => (dispatch) => {
+    const url = '/relationship/followUser'
 
-    const followDetails = {
-        idUserFrom: idUserFrom,
-        idUserTo: idUserTo,
-    };
-
-    axios.post(url, followDetails)
+    axios.post(url, null, {
+        params: {
+            idUserFrom: idUserFrom,
+            idUserTo: idUserTo,
+        }
+    })
         .then(res => {
             dispatch({
                 type: FOLLOW_USER,
@@ -123,15 +123,15 @@ export const followUser = (idUserFrom, idUserTo) => (dispatch) =>{
         .catch(err => console.log(err))
 }
 
-export const unfollowUser = (idUserFrom, idUserTo) => (dispatch) =>{
-    const url ='/relationship/unfollowUser'
+export const unfollowUser = (idUserFrom, idUserTo) => (dispatch) => {
+    const url = '/relationship/unfollowUser'
 
-    const followDetails = {
-        idUserFrom: idUserFrom,
-        idUserTo: idUserTo,
-    };
-
-    axios.delete(url, followDetails)
+    axios.post(url, null, {
+        params: {
+            idUserFrom: idUserFrom,
+            idUserTo: idUserTo,
+        }
+    })
         .then(res => {
             dispatch({
                 type: UNFOLLOW_USER,

@@ -7,7 +7,9 @@ const initialState = {
     likes: [],
     idUser: 2,
     followerList: [],
-    followingList: []
+    followingList: [],
+    followingCount: null,
+    followerCount: null
 }
 
 export default function( state = initialState, action){
@@ -68,14 +70,16 @@ export default function( state = initialState, action){
                         firstName: action.payload.firstName,
                         lastName: action.payload.lastName
                     }
-                ]
+                ],
+                followingCount: state.followingCount + 1
             };
         case UNFOLLOW_USER:
             return{
                 ...state,
                 followingList: state.followingList.filter(
                     (followedUser) => followedUser.idUser !== action.payload.idUser
-                )
+                ),
+                followingCount: state.followingCount - 1
             };
         default:
             return state;

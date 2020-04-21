@@ -1,4 +1,4 @@
-import {SET_POSTS, LIKE_POST, UNLIKE_POST, LOADING_DATA, NO_MORE_DATA, DELETE_POST, CREATE_POST, SET_USER_SEARCH_SUGGESTIONS, LOADING_SEARCH_SUGGESTION_DATA, LOADING_SEARCH_RESULT_DATA, SET_USER_SEARCH_RESULTS, CLEAR_USER_SEARCH_SUGGESTIONS} from '../types';
+import {SET_POSTS, LIKE_POST, UNLIKE_POST, LOADING_DATA, NO_MORE_DATA, DELETE_POST, CREATE_POST, SET_USER_SEARCH_SUGGESTIONS, LOADING_SEARCH_SUGGESTION_DATA, LOADING_SEARCH_RESULT_DATA, SET_USER_SEARCH_RESULTS, CLEAR_USER_SEARCH_SUGGESTIONS, LOADING_COMMENT_SECTION_DATA, SET_COMMENT_SECTION_DATA, ADD_NEW_POST_COMMENT} from '../types';
 
 const initialState = {
     userSearchResult:[],
@@ -7,6 +7,8 @@ const initialState = {
     loadingSearchSuggestion: false,
     posts: [],
     post: {},
+    currentPostComments: [],
+    loadingComments: false,
     loading: false,
     hasMore: true,
     currentIndex: 0,
@@ -29,6 +31,11 @@ export default function(state = initialState, action){
             return{
                 ...state,
                 loadingSearchResult: true
+            }
+        case LOADING_COMMENT_SECTION_DATA:
+            return{
+                ...state,
+                loadingComments: true
             }
         case SET_POSTS:
             return{
@@ -80,6 +87,18 @@ export default function(state = initialState, action){
             return{
                 ...state,
                 userSearchSuggestions: []
+            }
+        case SET_COMMENT_SECTION_DATA:
+            return{
+                ...state,
+                currentPostComments: action.payload,
+                loadingComments: false
+            }
+        case ADD_NEW_POST_COMMENT:
+            return{
+                ...state,
+                currentPostComments: state.currentPostComments.concat(action.payload),
+                loadingComments: false
             }
         default:
             return state;
