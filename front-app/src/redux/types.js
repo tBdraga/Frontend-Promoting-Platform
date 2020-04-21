@@ -32,3 +32,5 @@ export const ADD_NEW_POST_COMMENT = 'ADD_NEW_POST_COMMENT';
 //Menu reducer types
 export const OPEN_MENU = 'OPEN_MENU';
 export const CLOSE_MENU = 'CLOSE_MENU';
+export const OPEN_COMMENT_SECTION = 'OPEN_COMMENT_SECTION';
+export const CLOSE_COMMENT_SECTION = 'CLOSE_COMMENT_SECTION';

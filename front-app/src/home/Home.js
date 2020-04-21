@@ -94,7 +94,8 @@ class Home extends Component {
 
 const mapStateToProps = (state) => ({
     data: state.data,
-    user: state.user
+    user: state.user,
+    menu: state.menu
 })
 
 const mapActionsToProps = {
@@ -104,7 +105,8 @@ const mapActionsToProps = {
 Home.propTypes = {
     getPostsPaginated: PropTypes.func.isRequired,
     data: PropTypes.object.isRequired,
-    user: PropTypes.object.isRequired
+    user: PropTypes.object.isRequired,
+    menu: PropTypes.object.isRequired
 }
 
 export default connect(mapStateToProps, mapActionsToProps)((Home));

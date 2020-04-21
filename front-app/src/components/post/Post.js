@@ -24,11 +24,12 @@ import Tooltip from '@material-ui/core/Tooltip';
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ChatIcon from '@material-ui/icons/Chat';
+import CloseIcon from '@material-ui/icons/Close';
 
 //redux stuff
 import { connect } from 'react-redux';
-import { likePost, unlikePost,  getPostComments} from '../../redux/actions/dataActions';
-import { openPostMenu } from '../../redux/actions/menuActions';
+import { likePost, unlikePost, getPostComments } from '../../redux/actions/dataActions';
+import { openPostMenu, openCommentSection } from '../../redux/actions/menuActions';
 
 //CSS
 import './Post.css';
@@ -73,7 +74,6 @@ class Post extends Component {
             author: 'loading ... ',
             postPictures: [],
             postDate: 'loading ... ',
-            drawerIsOpen: false
         };
     }
 
@@ -141,12 +141,10 @@ class Post extends Component {
         this.props.closePostMenu();
     }
 
-    openCommentsDrawer = () =>{
+    openCommentsDrawer = () => {
         this.props.getPostComments(this.props.post.idPost);
 
-        this.setState({
-            drawerIsOpen: true
-        })
+        this.props.openCommentSection();
     }
 
     render() {
@@ -177,7 +175,7 @@ class Post extends Component {
                         </Tooltip>
                     )
             )
-            
+
         return (
             <Card className={classes.card}>
                 <CardHeader
@@ -220,20 +218,24 @@ class Post extends Component {
                     </IconButton>
                 </CardActions>
 
-                <CommentSection isOpen={this.state.drawerIsOpen} idPost={this.props.post.idPost}></CommentSection>
+                <div className="comment-section-wrapper">
+                    <CommentSection isOpen={this.state.drawerIsOpen} idPost={this.props.post.idPost}></CommentSection>
+                </div>
             </Card>
         );
     }
 }
 const mapStateToProps = (state) => ({
-    user: state.user
+    user: state.user,
+    menu: state.menu
 })
 
 const mapActionsToProps = {
     likePost,
     unlikePost,
     openPostMenu,
-    getPostComments
+    getPostComments,
+    openCommentSection
 }
 
 Post.propTypes = {
@@ -241,6 +243,7 @@ Post.propTypes = {
     unlikePost: PropTypes.func.isRequired,
     openPostMenu: PropTypes.func.isRequired,
     getPostComments: PropTypes.func.isRequired,
+    openCommentSection: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
     menu: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired

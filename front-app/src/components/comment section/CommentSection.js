@@ -5,6 +5,7 @@ import withStyles from '@material-ui/core/styles/withStyles'
 //redux
 import { connect } from 'react-redux';
 import { addPostComment } from '../../redux/actions/dataActions';
+import { closeCommentSection } from '../../redux/actions/menuActions'
 
 //MUI stuff
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -20,25 +21,28 @@ import Comment from '../comment/Comment';
 
 const styles = {
     progress: {
-        position: 'absolute'
+        position: 'absolute',
+        left: '20%',
+        top: '50%'
     },
     textField: {
         margin: '10px auto 10px auto'
     },
-    button: {
+    buttonPost: {
         marginTop: 20,
-        position: 'relative'
+        position: 'relative',
+    },
+    buttonClose: {
+        marginTop: 20,
+        position: 'relative',
+        marginLeft: 10
     },
 }
 
 class CommentSection extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            newComment: ''
-        };
-    }
+    state = {
+        newComment: '',
+    };
 
     handleChange = (event) => {
         this.setState({
@@ -55,7 +59,7 @@ class CommentSection extends Component {
                     {currentPostComments.map((postComment) => <ListItem className={classes.listItem} ><Comment commentData={postComment}></Comment></ListItem>)}
                 </List>
             );
-        } else if (!loadingComments && !currentPostComments) {
+        } else if (!loadingComments && !currentPostComments.length) {
             return (
                 <p> No comments available :(</p>
             );
@@ -63,7 +67,7 @@ class CommentSection extends Component {
     }
 
     postNewComment = () => {
-        const { classes, data: { currentPostComments, loadingComments }, user: { idUser }, idPost } = this.props;
+        const { user: { idUser }, idPost } = this.props;
 
         const newPostComment = {
             comment: this.state.newComment,
@@ -75,14 +79,18 @@ class CommentSection extends Component {
         this.props.addPostComment(newPostComment);
     }
 
+    closeCommentsection = () => {
+        this.props.closeCommentSection();
+    }
+
     render() {
 
-        const { isOpen, classes, data: { currentPostComments, loadingComments } } = this.props;
+        const { classes, data: { loadingComments }, menu: { commentSectionIsOpen } } = this.props;
 
         return (
             <div className="comment-section">
 
-                <Drawer anchor={'bottom'} open={isOpen}>
+                <Drawer anchor={'bottom'} open={commentSectionIsOpen}>
                     <Grid container spacing={3}>
                         <Grid item xs={6}>
                             {this.renderComments()}
@@ -94,18 +102,28 @@ class CommentSection extends Component {
                             <Button
                                 variant="contained"
                                 color="primary"
-                                className={classes.button}
+                                className={classes.buttonPost}
                                 disabled={loadingComments}
                                 onClick={this.postNewComment}
                             >
                                 Post Comment
                             {loadingComments && (<CircularProgress className={classes.progress} size={25}></CircularProgress>)}
                             </Button>
+
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                className={classes.buttonClose}
+                                disabled={loadingComments}
+                                onClick={this.closeCommentsection}
+                            >
+                                Close
+                            </Button>
                         </Grid>
                     </Grid>
 
 
-                    {loadingComments && (<CircularProgress className={classes.progress} size={50}></CircularProgress>)}
+                    {loadingComments && (<CircularProgress className={classes.progress} size={30}></CircularProgress>)}
                 </Drawer>
             </div>
         );
@@ -115,11 +133,13 @@ class CommentSection extends Component {
 
 const mapStateToProps = (state) => ({
     data: state.data,
-    user: state.user
+    user: state.user,
+    menu: state.menu
 })
 
 const mapActionsToProps = {
-    addPostComment
+    addPostComment,
+    closeCommentSection
 }
 
 CommentSection.propTypes = {
@@ -127,6 +147,8 @@ CommentSection.propTypes = {
     user: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
     addPostComment: PropTypes.func.isRequired,
+    closeCommentSection: PropTypes.func.isRequired,
+    menu: PropTypes.object.isRequired,
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(CommentSection));

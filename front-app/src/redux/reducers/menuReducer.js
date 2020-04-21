@@ -1,8 +1,9 @@
-import { OPEN_MENU, CLOSE_MENU } from '../types';
+import { OPEN_MENU, CLOSE_MENU, OPEN_COMMENT_SECTION, CLOSE_COMMENT_SECTION } from '../types';
 
 const initialState = {
     isOpen: false,
-    anchorEl: null
+    anchorEl: null,
+    commentSectionIsOpen: false
 };
 
 export default function(state = initialState, action){
@@ -12,14 +13,24 @@ export default function(state = initialState, action){
                 ...state,
                 anchorEl: action.payload,
                 isOpen: true
-            }
+            };
         case CLOSE_MENU:
             return{
                 ...state,
                 isOpen: false,
                 anchorEl: null
-            }
+            };
+        case OPEN_COMMENT_SECTION:
+            return{
+                ...state,
+                commentSectionIsOpen: true
+            };
+        case CLOSE_COMMENT_SECTION:
+            return{
+                ...state,
+                commentSectionIsOpen: false
+            };
         default:
-            return state
+            return state;
     }
 }
