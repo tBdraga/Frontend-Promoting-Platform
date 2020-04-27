@@ -22,7 +22,7 @@ import Comment from '../comment/Comment';
 const styles = {
     progress: {
         position: 'absolute',
-        left: '20%',
+        left: '25%',
         top: '50%'
     },
     textField: {

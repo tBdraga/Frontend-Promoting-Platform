@@ -85,10 +85,16 @@ export const deletePost = (url, postId) => (dispatch) => {
         .catch(err => console.log(err));
 }
 
-export const createPost = (newPost) => (dispatch) => {
-    dispatch({ type: LOADING_UI });
+export const createPost = (formData, companyTag, description, idUser) => (dispatch) => {
+    //dispatch({ type: LOADING_UI });
 
-    axios.post('/posts/createPost', newPost)
+    axios.post('/posts/createPost', formData, {
+        params: {
+            companyTag,
+            description,
+            idUser
+        }
+    })
         .then(res => {
             dispatch({
                 type: CREATE_POST,
