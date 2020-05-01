@@ -26,19 +26,30 @@ class Navbar extends Component {
 
     render() {
 
-        const { classes, user: { username, firstName, lastName, idUser, profileDescription, profilePicture, loading, authenticated } } = this.props;
+        const { classes, user: { userRole, loading, authenticated } } = this.props;
 
-        let navbarMarkup = !loading ? (authenticated ? (
+        let navbarMarkup = !loading ? (authenticated ? ( userRole ==='ADMIN' ? (
             <AppBar position="fixed">
                 <Toolbar className="nav-container">
                     <SearchBar></SearchBar>
                     <CreatePost></CreatePost>
                     <Button color="inherit" component={Link} to="/">Home</Button>
-                    <Button color="inherit">Create Post</Button>
+                    <Button color="inherit" component={Link} to="/adminDash">Admin Dashboard</Button>
                     <Button color="inherit" component={Link} to="/editProfile">Profile Settings</Button>
                     <Button color="inherit" onClick={this.handleLogout}>Logout</Button>
                 </Toolbar>
             </AppBar>
+        ) : (
+            <AppBar position="fixed">
+                <Toolbar className="nav-container">
+                    <SearchBar></SearchBar>
+                    <CreatePost></CreatePost>
+                    <Button color="inherit" component={Link} to="/">Home</Button>
+                    <Button color="inherit" component={Link} to="/editProfile">Profile Settings</Button>
+                    <Button color="inherit" onClick={this.handleLogout}>Logout</Button>
+                </Toolbar>
+            </AppBar>
+        )
         ) : (
                 <AppBar position="fixed">
                     <Toolbar className="nav-container">

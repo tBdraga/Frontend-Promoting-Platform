@@ -1,4 +1,4 @@
-import {SET_POSTS, LIKE_POST, UNLIKE_POST, LOADING_DATA, NO_MORE_DATA, DELETE_POST, CREATE_POST, SET_USER_SEARCH_SUGGESTIONS, LOADING_SEARCH_SUGGESTION_DATA, LOADING_SEARCH_RESULT_DATA, SET_USER_SEARCH_RESULTS, CLEAR_USER_SEARCH_SUGGESTIONS, LOADING_COMMENT_SECTION_DATA, SET_COMMENT_SECTION_DATA, ADD_NEW_POST_COMMENT} from '../types';
+import {SET_POSTS, LIKE_POST, UNLIKE_POST, LOADING_DATA, NO_MORE_DATA, DELETE_POST, CREATE_POST, SET_USER_SEARCH_SUGGESTIONS, LOADING_SEARCH_SUGGESTION_DATA, LOADING_SEARCH_RESULT_DATA, SET_USER_SEARCH_RESULTS, CLEAR_USER_SEARCH_SUGGESTIONS, LOADING_COMMENT_SECTION_DATA, SET_COMMENT_SECTION_DATA, ADD_NEW_POST_COMMENT, LOADING_POST_REPORTS, ADD_POST_REPORTS} from '../types';
 
 const initialState = {
     userSearchResult:[],
@@ -9,6 +9,8 @@ const initialState = {
     post: {},
     currentPostComments: [],
     loadingComments: false,
+    postReports: [],
+    loadingPostReports: false,
     loading: false,
     hasMore: true,
     currentIndex: 0,
@@ -36,6 +38,11 @@ export default function(state = initialState, action){
             return{
                 ...state,
                 loadingComments: true
+            }
+        case LOADING_POST_REPORTS:
+            return{
+                ...state,
+                loadingPostReports: true
             }
         case SET_POSTS:
             return{
