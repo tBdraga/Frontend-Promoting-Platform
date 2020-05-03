@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Link from 'react-router-dom/Link';
 import uploadIcon from '../../assets/uploadIcon.png'
+import Axios from "axios";
 
 //MUI stuff
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -48,8 +49,55 @@ const styles = {
 
 class PostReport extends Component {
     state = {
-        user: 'test user',
-        description: 'test description Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut liber'
+        author: '...',
+        images: []
+    }
+
+    componentDidMount() {
+        this.getPostMedia(this.props.post);
+        this.loadAuthorInfo(this.props.post);
+    }
+
+    getPostMedia(post) {
+        let getMediaUrl = '/posts/getPostMedia/' + post.idPost;
+
+        //get all post media
+        Axios.get(getMediaUrl)
+            .then((res) => {
+                let media = res.data;
+
+                this.setState({
+                    images: media
+                });
+            })
+            .catch(err => console.log(err))
+    }
+    
+    loadAuthorInfo(post) {
+
+        let getAuthorsUrl = '/users/findById/' + post.idUser;
+
+        //get All Authors
+        Axios.get(getAuthorsUrl)
+            .then((res) => {
+                let author = res.data;
+
+                this.setState({
+                    author: author
+                });
+            })
+            .catch(err => console.log(err));
+    }
+
+    renderImageData() {
+
+        const { classes } = this.props;
+
+        return this.state.images.map((image) => {
+            return (
+                <img src={`data:image/jpeg;base64,${image}`} className={classes.imageDisplay}/>
+            )
+        })
     }
 
     render() {
@@ -61,15 +109,15 @@ class PostReport extends Component {
                 <Grid container spacing={3}>
                     <Grid item xs={4}>
                         <div className={classes.uploaderInfo}>
-                            <Typography variant="h3" color="primary">{this.state.user}</Typography>
-                            <Typography variant="body2">{this.state.description}</Typography>
+                            <Typography variant="h3" color="primary">{this.state.author.username}</Typography>
+                            <Typography variant="body2">{this.props.post.description}</Typography>
                         </div>
                     </Grid>
 
                     <Grid item xs={8}>
-                        <img src={uploadIcon} className={classes.imageDisplay}></img>
-                        <img src={uploadIcon} className={classes.imageDisplay}></img>
-                        <img src={uploadIcon} className={classes.imageDisplay}></img>
+                        <div>
+                            {this.renderImageData()}
+                        </div>
 
                         <div className={classes.buttons}>
                             <Tooltip title="Delete Post" placement="top">

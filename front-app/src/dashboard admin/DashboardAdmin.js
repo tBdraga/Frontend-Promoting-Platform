@@ -17,6 +17,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 //redux
 import { connect } from 'react-redux';
+import { getPostReports } from '../redux/actions/dataActions';
 
 //components
 import PostReport from '../components/post report/PostReport';
@@ -74,9 +75,16 @@ const styles = (theme) => ({
 });
 
 class DashboardAdmin extends Component {
+
+    loadReports = () => {
+        let url = '/reports/getReports';
+
+        this.props.getPostReports(url);
+    }
+
     render() {
 
-        const { classes, user: { username, firstName, lastName, idUser, profileDescription, profilePicture, loading, authenticated }, data : {loadingPostReports, } } = this.props;
+        const { classes, user: { username, firstName, lastName, idUser, profileDescription, profilePicture, loading, authenticated }, data: { loadingPostReports, postReports } } = this.props;
 
         let profileMarkup = !loading ? (authenticated ? (
             <Paper className={classes.paper}>
@@ -103,14 +111,15 @@ class DashboardAdmin extends Component {
                     </div>
 
                     <Button
-                            variant="contained"
-                            color="primary"
-                            className={classes.button}
-                            disabled={null}
-                        >
-                            Load Reports 
-                            {loading && (<CircularProgress className={classes.progress} size={25}></CircularProgress>)}
-                        </Button>
+                        variant="contained"
+                        color="primary"
+                        className={classes.button}
+                        disabled={loadingPostReports}
+                        onClick={this.loadReports}
+                    >
+                        Load Reports
+                            {loadingPostReports && (<CircularProgress className={classes.progress} size={25}></CircularProgress>)}
+                    </Button>
                 </div>
             </Paper>
         ) : (
@@ -122,7 +131,11 @@ class DashboardAdmin extends Component {
                     </div>
                 </Paper>
             )) : (<p>loading...</p>)
-        
+
+
+        let recentReportsMarkup = !loadingPostReports ? (
+            postReports.map(report => <PostReport post={report.post}></PostReport>)
+        ) : <p></p>
 
         return (
             <Grid container spacing={3}>
@@ -131,7 +144,7 @@ class DashboardAdmin extends Component {
                 </Grid>
 
                 <Grid item xs={8}>
-                    <PostReport></PostReport>
+                    {recentReportsMarkup}
                 </Grid>
             </Grid>
         );
@@ -139,15 +152,19 @@ class DashboardAdmin extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    user: state.user
+    user: state.user,
+    data: state.data
 })
 
-const mapActionsToPros = { };
+const mapActionsToPros = {
+    getPostReports
+};
 
 DashboardAdmin.propTypes = {
     user: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
-    data: PropTypes.object.isRequired
+    data: PropTypes.object.isRequired,
+    getPostReports: PropTypes.func.isRequired
 }
 
 export default connect(mapStateToProps, mapActionsToPros)(withStyles(styles)(DashboardAdmin));

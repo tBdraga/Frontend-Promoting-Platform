@@ -107,6 +107,12 @@ export default function(state = initialState, action){
                 currentPostComments: state.currentPostComments.concat(action.payload),
                 loadingComments: false
             }
+        case ADD_POST_REPORTS:
+            return{
+                ...state,
+                postReports: action.payload,
+                loadingPostReports: false
+            }
         default:
             return state;
 
