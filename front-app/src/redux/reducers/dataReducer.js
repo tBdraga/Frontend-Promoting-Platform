@@ -1,4 +1,4 @@
-import {SET_POSTS, LIKE_POST, UNLIKE_POST, LOADING_DATA, NO_MORE_DATA, DELETE_POST, CREATE_POST, SET_USER_SEARCH_SUGGESTIONS, LOADING_SEARCH_SUGGESTION_DATA, LOADING_SEARCH_RESULT_DATA, SET_USER_SEARCH_RESULTS, CLEAR_USER_SEARCH_SUGGESTIONS, LOADING_COMMENT_SECTION_DATA, SET_COMMENT_SECTION_DATA, ADD_NEW_POST_COMMENT, LOADING_POST_REPORTS, ADD_POST_REPORTS} from '../types';
+import {SET_POSTS, LIKE_POST, UNLIKE_POST, LOADING_DATA, NO_MORE_DATA, DELETE_POST, CREATE_POST, SET_USER_SEARCH_SUGGESTIONS, LOADING_SEARCH_SUGGESTION_DATA, LOADING_SEARCH_RESULT_DATA, SET_USER_SEARCH_RESULTS, CLEAR_USER_SEARCH_SUGGESTIONS, LOADING_COMMENT_SECTION_DATA, SET_COMMENT_SECTION_DATA, ADD_NEW_POST_COMMENT, LOADING_POST_REPORTS, ADD_POST_REPORTS, REMOVE_POST_REPORT_FROM_QUEUE} from '../types';
 
 const initialState = {
     userSearchResult:[],
@@ -112,6 +112,12 @@ export default function(state = initialState, action){
                 ...state,
                 postReports: action.payload,
                 loadingPostReports: false
+            }
+        case REMOVE_POST_REPORT_FROM_QUEUE:
+            index = state.postReports.findIndex(report => report.idReport === action.payload);
+            state.posts.splice(index, 1);
+            return{
+                ...state
             }
         default:
             return state;

@@ -18,6 +18,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 //redux
 import { connect } from 'react-redux';
 
+
 const styles = {
     card: {
         width: '500px',
@@ -100,6 +101,10 @@ class PostReport extends Component {
         })
     }
 
+    handleDelete(){
+
+    }
+
     render() {
 
         const { classes } = this.props;
@@ -121,7 +126,7 @@ class PostReport extends Component {
 
                         <div className={classes.buttons}>
                             <Tooltip title="Delete Post" placement="top">
-                                <IconButton size="medium">
+                                <IconButton size="medium" onClick={this.handleDelete}>
                                     <DeleteIcon color="primary" />
                                 </IconButton>
                             </Tooltip>

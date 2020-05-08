@@ -1,4 +1,4 @@
-import { SET_POSTS, LOADING_DATA, LIKE_POST, UNLIKE_POST, NO_MORE_DATA, DELETE_POST, CLEAR_ERRORS, SET_ERRORS, CREATE_POST, LOADING_UI, SET_USER_SEARCH_SUGGESTIONS, LOADING_SEARCH_SUGGESTION_DATA, LOADING_SEARCH_RESULT_DATA, SET_USER_SEARCH_RESULTS, CLEAR_USER_SEARCH_SUGGESTIONS, LOADING_COMMENT_SECTION_DATA, SET_COMMENT_SECTION_DATA, ADD_NEW_POST_COMMENT, LOADING_POST_REPORTS, ADD_POST_REPORTS } from '../types';
+import { SET_POSTS, LOADING_DATA, LIKE_POST, UNLIKE_POST, NO_MORE_DATA, DELETE_POST, CLEAR_ERRORS, SET_ERRORS, CREATE_POST, LOADING_UI, SET_USER_SEARCH_SUGGESTIONS, LOADING_SEARCH_SUGGESTION_DATA, LOADING_SEARCH_RESULT_DATA, SET_USER_SEARCH_RESULTS, CLEAR_USER_SEARCH_SUGGESTIONS, LOADING_COMMENT_SECTION_DATA, SET_COMMENT_SECTION_DATA, ADD_NEW_POST_COMMENT, LOADING_POST_REPORTS, ADD_POST_REPORTS, REMOVE_POST_REPORT_FROM_QUEUE } from '../types';
 import axios from 'axios';
 
 export const getPostsPaginated = (url, startPosition, step) => (dispatch) => {
@@ -211,4 +211,15 @@ export const getPostReports = (url) => (dispatch) => {
                 type: ADD_POST_REPORTS,
                 payload: []
             }))
+}
+
+export const deletePostReport = (url,reportId) =>(dispatch) => {
+    axios.delete(url,reportId)
+        .then(res => {
+            dispatch({
+                type: REMOVE_POST_REPORT_FROM_QUEUE,
+                payload: res.data
+            })
+        })
+        .catch(err => console.log(err))
 }
