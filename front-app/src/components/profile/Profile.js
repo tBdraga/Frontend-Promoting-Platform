@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles'
 import { Link } from 'react-router-dom';
 import Axios from 'axios';
+import defaultProfile from '../../assets/defaultProfile.png'
 
 //CSS
 import './Profile.css';
@@ -72,6 +73,16 @@ const styles = (theme) => ({
         '& a': {
             margin: '20px 10px'
         }
+    },
+    profileDefault: {
+        width: 100,
+        height: 100,
+        objectFit: 'cover',
+        maxWidth: '100%',
+        borderRadius: '50%',
+        display: 'block',
+        marginLeft: 'auto',
+        marginRight: 'auto'
     }
 });
 
@@ -80,12 +91,18 @@ class Profile extends Component {
     render() {
 
         const { classes, user: { username, firstName, lastName, idUser, profileDescription, profilePicture, loading, authenticated, followingCount, followerCount } } = this.props;
+        
+        const profileImage = !profilePicture ? (
+            <img src={defaultProfile} className="profile-image"></img>
+        ) : (
+            <img src={`data:image/jpeg;base64,${profilePicture}`} alt="profile" className="profile-image"></img>
+        )
 
         let profileMarkup = !loading ? (authenticated ? (
             <Paper className={classes.paper}>
                 <div className={classes.profile}>
                     <div className="image-wrapper">
-                        <img src={`data:image/jpeg;base64,${profilePicture}`} alt="profile" className="profile-image"></img>
+                        {profileImage}
 
                         <Button size="medium" className={classes.followersBtn}>
                             {followerCount+' followers'}

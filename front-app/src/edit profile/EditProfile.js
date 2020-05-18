@@ -4,6 +4,7 @@ import withStyles from '@material-ui/core/styles/withStyles'
 import { Link } from 'react-router-dom';
 import Axios from 'axios';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import defaultProfile from '../assets/defaultProfile.png'
 
 //components
 import Post from '../components/post/Post.js';
@@ -183,6 +184,12 @@ class EditProfile extends Component {
 
         const { classes, user: { username, firstName, lastName, idUser, profileDescription, profilePicture, loading, authenticated } } = this.props;
 
+        const profileImage = !profilePicture ? (
+            <img src={defaultProfile} className="profile-image"></img>
+        ) : (
+            <img src={`data:image/jpeg;base64,${profilePicture}`} alt="profile" className="profile-image"></img>
+        )
+
         let personalPostsMarkup = this.state.posts ? (
             this.state.posts.map(post => <Post post={post}></Post>)
         ) : <p>No posts available :(</p>
@@ -191,7 +198,7 @@ class EditProfile extends Component {
             <Paper className={classes.paper}>
                 <div className={classes.profile}>
                     <div className="image-wrapper">
-                        <img src={`data:image/jpeg;base64,${profilePicture}`} alt="profile" className="profile-image"></img>
+                        {profileImage}
 
                         <input type="file" id="imageInput" onChange={this.handleImageChange} hidden="hidden"></input>
 

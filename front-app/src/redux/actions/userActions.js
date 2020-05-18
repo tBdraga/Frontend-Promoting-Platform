@@ -25,10 +25,10 @@ export const loginUser = (userData, history) => (dispatch) => {
         });
 };
 
-export const signupUser = (newUserData, history) => (dispatch) => {
+export const signupUser = (isBusinessAccount, newUserData, history) => (dispatch) => {
     dispatch({ type: LOADING_UI });
 
-    axios.post('/register', newUserData)
+    axios.post('/register/'+isBusinessAccount, newUserData)
         .then(result => {
 
             setAuthorizationHeader(result.data.jwtToken);

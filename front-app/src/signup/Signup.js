@@ -15,6 +15,7 @@ import {
     KeyboardTimePicker,
     KeyboardDatePicker,
 } from '@material-ui/pickers';
+import Switch from '@material-ui/core/Switch';
 
 //Redux stuff
 import { connect } from 'react-redux';
@@ -50,12 +51,14 @@ class Signup extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            isBusinessSignup: false,
             firstName: '',
             lastName: '',
             emailAddress: '',
             username: '',
             birthdate: new Date(),
             password: '',
+            websiteLink: '',
             errors: {}
         };
     }
@@ -75,14 +78,21 @@ class Signup extends Component {
             emailAddress: this.state.emailAddress,
             username: this.state.username,
             password: this.state.password,
+            websiteLink: this.state.websiteLink
         }
 
-        this.props.signupUser(userData, this.props.history);
+        this.props.signupUser(this.state.isBusinessSignup, userData, this.props.history);
     }
 
     handleChange = (event) => {
         this.setState({
             [event.target.name]: event.target.value
+        })
+    }
+
+    handleSwitchChange = (event) => {
+        this.setState({
+            [event.target.name]: event.target.checked
         })
     }
 
@@ -103,18 +113,38 @@ class Signup extends Component {
                         Signup
                     </Typography>
 
+
+                    <Grid container alignItems="center" spacing>
+                        <Grid item>
+                            Basic User
+                        </Grid>
+
+                        <Grid item>
+                            <Switch color="primary" checked={this.state.isBusinessSignup} onChange={this.handleSwitchChange} name="isBusinessSignup" className={classes.switchButton}>
+                            </Switch>
+                        </Grid>
+
+                        <Grid item>
+                            Business Owner
+                        </Grid>
+                    </Grid>
+
                     <form noValidate onSubmit={this.handleSubmit}>
                         <Grid container spacing={3}>
+                            <Grid item xs>
+                                <TextField disabled={!this.state.isBusinessSignup} id="websiteLink" name="websiteLink" type="text" label="Website Link" className={classes.textField} value={this.state.websiteLink} onChange={this.handleChange} fullWidth></TextField>
+                            </Grid>
+
+                            <Grid item xs={6}>
+                                <TextField id="username" name="username" type="text" label="Username" className={classes.textField} value={this.state.username} onChange={this.handleChange} fullWidth helperText={errors.usernameErrMessage} error={errors.usernameErrMessage ? true : false}></TextField>
+                            </Grid>
+
                             <Grid item xs={6}>
                                 <TextField id="firstName" name="firstName" type="text" label="First Name" className={classes.textField} value={this.state.firstName} onChange={this.handleChange} fullWidth helperText={errors.usernameErrMessage} error={errors.usernameErrMessage ? true : false}></TextField>
                             </Grid>
 
                             <Grid item xs={6}>
                                 <TextField id="lastName" name="lastName" type="text" label="Last Name" className={classes.textField} value={this.state.lastName} onChange={this.handleChange} fullWidth helperText={errors.usernameErrMessage} error={errors.usernameErrMessage ? true : false}></TextField>
-                            </Grid>
-
-                            <Grid item xs={6}>
-                                <TextField id="username" name="username" type="text" label="Username" className={classes.textField} value={this.state.username} onChange={this.handleChange} fullWidth helperText={errors.usernameErrMessage} error={errors.usernameErrMessage ? true : false}></TextField>
                             </Grid>
 
                             <Grid item xs={6}>
