@@ -8,6 +8,7 @@ import './Navbar.css';
 //Components
 import SearchBar from './search bar/SearchBar'
 import CreatePost from '../create post/CreatePost';
+import Recommender from '../recommender/Recommender';
 
 //Material-UI stuff
 import AppBar from '@material-ui/core/AppBar';
@@ -33,6 +34,7 @@ class Navbar extends Component {
                 <Toolbar className="nav-container">
                     <SearchBar></SearchBar>
                     <CreatePost></CreatePost>
+                    <Recommender startCount='15'></Recommender>
                     <Button color="inherit" component={Link} to="/">Home</Button>
                     <Button color="inherit" component={Link} to="/adminDash">Admin Dashboard</Button>
                     <Button color="inherit" component={Link} to="/editProfile">Profile Settings</Button>
@@ -44,6 +46,7 @@ class Navbar extends Component {
                 <Toolbar className="nav-container">
                     <SearchBar></SearchBar>
                     <CreatePost></CreatePost>
+                    <Recommender startCount='15'></Recommender>
                     <Button color="inherit" component={Link} to="/">Home</Button>
                     <Button color="inherit" component={Link} to="/editProfile">Profile Settings</Button>
                     <Button color="inherit" onClick={this.handleLogout}>Logout</Button>

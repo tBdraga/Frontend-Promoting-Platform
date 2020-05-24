@@ -1,4 +1,4 @@
-import {SET_POSTS, LIKE_POST, UNLIKE_POST, LOADING_DATA, NO_MORE_DATA, DELETE_POST, CREATE_POST, SET_USER_SEARCH_SUGGESTIONS, LOADING_SEARCH_SUGGESTION_DATA, LOADING_SEARCH_RESULT_DATA, SET_USER_SEARCH_RESULTS, CLEAR_USER_SEARCH_SUGGESTIONS, LOADING_COMMENT_SECTION_DATA, SET_COMMENT_SECTION_DATA, ADD_NEW_POST_COMMENT, LOADING_POST_REPORTS, ADD_POST_REPORTS, REMOVE_POST_REPORT_FROM_QUEUE} from '../types';
+import {SET_POSTS, LIKE_POST, UNLIKE_POST, LOADING_DATA, NO_MORE_DATA, DELETE_POST, CREATE_POST, SET_USER_SEARCH_SUGGESTIONS, LOADING_SEARCH_SUGGESTION_DATA, LOADING_SEARCH_RESULT_DATA, SET_USER_SEARCH_RESULTS, CLEAR_USER_SEARCH_SUGGESTIONS, LOADING_COMMENT_SECTION_DATA, SET_COMMENT_SECTION_DATA, ADD_NEW_POST_COMMENT, LOADING_POST_REPORTS, ADD_POST_REPORTS, REMOVE_POST_REPORT_FROM_QUEUE, LOADING_RECOMMENDATIONS, SET_RECOMMEDATIONS} from '../types';
 
 const initialState = {
     userSearchResult:[],
@@ -11,6 +11,8 @@ const initialState = {
     loadingComments: false,
     postReports: [],
     loadingPostReports: false,
+    recommendations: [],
+    loadingRecommendations: false,
     loading: false,
     hasMore: true,
     currentIndex: 0,
@@ -43,6 +45,11 @@ export default function(state = initialState, action){
             return{
                 ...state,
                 loadingPostReports: true
+            }
+        case LOADING_RECOMMENDATIONS:
+            return{
+                ...state,
+                loadingRecommendations: true
             }
         case SET_POSTS:
             return{
@@ -118,6 +125,12 @@ export default function(state = initialState, action){
             state.posts.splice(index, 1);
             return{
                 ...state
+            }
+        case SET_RECOMMEDATIONS:
+            return{
+                ...state,
+                recommendations: action.payload,
+                loadingRecommendations: false
             }
         default:
             return state;

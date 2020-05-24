@@ -18,6 +18,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import Axios from "axios";
 import PropTypes from 'prop-types';
+import AlternateEmailIcon from '@material-ui/icons/AlternateEmail';
 
 //MUI stuff
 import Tooltip from '@material-ui/core/Tooltip';
@@ -53,6 +54,13 @@ const styles = {
     avatar: {
         backgroundColor: red[500],
     },
+    companyTag: {
+        position: 'relative',
+        display: 'inline'
+    },
+    companyTagContainer: {
+        display: 'inline'
+    }
     /*expand: {
         transform: 'rotate(0deg)',
         marginLeft: 'auto',
@@ -150,7 +158,7 @@ class Post extends Component {
     render() {
         dayjs.extend(relativeTime);
 
-        const { classes, user: { authenticated, profilePicture }, post: { likes, idPost, comments } } = this.props;
+        const { classes, user: { authenticated, profilePicture }, post: { likes, idPost, comments, companyTag } } = this.props;
 
         const likeButton = !authenticated ? (
             <Tooltip title={likes + ' likes'} placement="top">
@@ -200,6 +208,11 @@ class Post extends Component {
                 </MediaCarousel>
 
                 <CardContent className={classes.content}>
+                    <div className={classes.companyTagContainer}>
+                        <AlternateEmailIcon fontSize="large" color="primary" className={classes.companyTag}></AlternateEmailIcon>
+                        <Typography variant="body1" className={classes.companyTag}>{companyTag}</Typography>
+                    </div>
+
                     <Typography variant="body1">{this.props.post.description}</Typography>
                 </CardContent>
 
