@@ -22,7 +22,7 @@ const styles = {
         backgroundColor: "red"
     }
 }
-
+ 
 class SearchSuggestion extends Component {
     followedUser = () => {
         if (this.props.user.followingList && this.props.user.followingList.find(followedUser => followedUser.idUser === this.props.searchSuggestion.idUser)) {

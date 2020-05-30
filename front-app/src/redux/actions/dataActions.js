@@ -227,7 +227,7 @@ export const deletePostReport = (url,reportId) =>(dispatch) => {
 export const requestRecommendations = (userId) => (dispatch) =>{
     dispatch({ type: LOADING_RECOMMENDATIONS });
 
-    const url = '/users/getRecommendations/'+userId;
+    const url = '/users/requestRecommendations/'+userId;
 
     axios.get(url)
         .then(res => {

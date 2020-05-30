@@ -4,6 +4,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 
 //redux
 import { connect } from 'react-redux';
+import { requestRecommendations } from '../../redux/actions/dataActions';
 
 //icons
 import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt';
@@ -12,33 +13,27 @@ import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import CloseIcon from '@material-ui/icons/Close';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+
+//Components
+import SearchSuggestion from '../user search suggestion/SearchSuggestion';
 
 const styles = {
-    submitButton: {
-        position: 'realtive',
-        paddingTop: '10px'
-    },
     progressSpinner: {
-        position: 'absolute'
+        position: 'absolute',
+        left: '50%',
+        top: '50%'
     },
     closeButton: {
         position: 'absolute',
         left: '85%',
         top: '5%'
-    },
-    companyTag: {
-        position: 'absolute',
-        top: '5%'
-    },
-    tagTextfield: {
-        position: 'absolute',
-        left: '10%',
-    },
-    descriptionTextfield: {
-        position: 'relative',
-        display: 'block',
-        width: '100%',
-        paddingBottom: '50px'
     },
     dialogTitle: {
         paddingBottom: '50px'
@@ -46,19 +41,11 @@ const styles = {
     dialogContent: {
         display: 'block'
     },
-    imagePreview: {
-        width: 100,
-        height: 100,
-        objectFit: 'cover',
-        maxWidth: '100%',
-        borderRadius: '50%',
-        display: 'block',
-        marginLeft: 'auto',
-        marginRight: 'auto'
+    unsortedList: {
+        position: 'absolute',
     },
-    uploadImageButton: {
-        display: 'inline',
-        padding: '40px'
+    listItem: {
+        width: '500px'
     }
 }
 
@@ -66,9 +53,30 @@ class Recommender extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            dialogIsOpen: false,
             count: 0,
             buttonIsDisabled: false,
         }
+    }
+
+    suggestionSelected = (userSearchSuggestion) => {
+    }
+
+    renderRecommendations = () => {
+        const { classes, data: { loadingRecommendations, recommendations } } = this.props;
+
+        if (!loadingRecommendations && recommendations) {
+            return (
+                <List className={classes.unsortedList}>
+                    {recommendations.map((recommendation) => <ListItem className={classes.listItem} button onClick={() => this.suggestionSelected(recommendation)}><SearchSuggestion searchSuggestion={recommendation}></SearchSuggestion></ListItem>)}
+                </List>
+            );
+        } else {
+            return (
+                <p>No recommendations available at this time :(</p>
+            );
+        }
+
     }
 
     stopTimer = () => {
@@ -105,12 +113,26 @@ class Recommender extends Component {
 
     requestRecommendations = () => {
         //bla bla request
+        this.props.requestRecommendations(this.props.user.idUser);
+
+        //open dialog
+        this.setState({
+            dialogIsOpen: true
+        })
 
         //start button cooldown
         this.startTimer();
     }
 
+    handleClose = () => {
+        this.setState({
+            dialogIsOpen: false
+        })
+    }
+
     render() {
+
+        const { classes, data: { loadingRecommendations, recommendations } } = this.props;
 
         return (
             <Fragment>
@@ -119,6 +141,32 @@ class Recommender extends Component {
                         <SystemUpdateAltIcon></SystemUpdateAltIcon>
                     </Button>
                 </Tooltip>
+
+                <Dialog
+                    open={this.state.dialogIsOpen}
+                    onClose={this.handleClose}
+                    fullWidth
+                    maxWidth="sm"
+                >
+                    <Button onClick={this.handleClose} className={classes.closeButton}>
+                        <CloseIcon></CloseIcon>
+                    </Button>
+
+                    <DialogTitle className={classes.dialogTitle}>
+                        <Typography variant="h5" gutterBottom>
+                            Daily recommendations!
+                        </Typography>
+                    </DialogTitle>
+
+                    <DialogContent className={classes.dialogContent}>
+
+                        {loadingRecommendations && (
+                            <CircularProgress size={30} className={classes.progressSpinner}></CircularProgress>
+                        )}
+
+                        {this.renderRecommendations()}
+                    </DialogContent>
+                </Dialog>
             </Fragment>
         )
     }
@@ -126,15 +174,19 @@ class Recommender extends Component {
 
 const mapStateToProps = (state) => ({
     UI: state.UI,
-    user: state.user
+    user: state.user,
+    data: state.data
 })
 
 const mapActionsToPros = {
+    requestRecommendations
 };
 
 Recommender.propTypes = {
+    requestRecommendations: PropTypes.func.isRequired,
     UI: PropTypes.object.isRequired,
-    user: PropTypes.object.isRequired
+    user: PropTypes.object.isRequired,
+    data: PropTypes.object.isRequired
 }
 
 export default connect(mapStateToProps, mapActionsToPros)(withStyles(styles)(Recommender));
