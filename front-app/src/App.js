@@ -26,6 +26,7 @@ import EditProfile from './edit profile/EditProfile';
 import Dashboard from './components/dashboard/Dashboard';
 import SearchResultsPage from './search results/SearchResultsPage';
 import DashboardAdmin from './dashboard admin/DashboardAdmin';
+import InspectOtherProfile from './inspect other profile/InspectOtherProfile';
 
 const theme = createMuiTheme({
   palette: {
@@ -74,6 +75,7 @@ function App() {
               <Route exact path="/searchResult" component={SearchResultsPage} ></Route>
               <Route exact path="/dashboard" component={Dashboard} ></Route>
               <Route exact path="/adminDash" component={DashboardAdmin}></Route>
+              <Route exact path="/profile/:idUser" component={InspectOtherProfile}></Route>
             </Switch>
           </div>
         </Router>

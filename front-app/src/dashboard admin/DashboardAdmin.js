@@ -83,7 +83,7 @@ class DashboardAdmin extends Component {
     }
 
     render() {
-
+ 
         const { classes, user: { username, firstName, lastName, idUser, profileDescription, profilePicture, loading, authenticated }, data: { loadingPostReports, postReports } } = this.props;
 
         let profileMarkup = !loading ? (authenticated ? (

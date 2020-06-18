@@ -1,4 +1,4 @@
-import { SET_POSTS, LOADING_DATA, LIKE_POST, UNLIKE_POST, NO_MORE_DATA, DELETE_POST, CLEAR_ERRORS, SET_ERRORS, CREATE_POST, LOADING_UI, SET_USER_SEARCH_SUGGESTIONS, LOADING_SEARCH_SUGGESTION_DATA, LOADING_SEARCH_RESULT_DATA, SET_USER_SEARCH_RESULTS, CLEAR_USER_SEARCH_SUGGESTIONS, LOADING_COMMENT_SECTION_DATA, SET_COMMENT_SECTION_DATA, ADD_NEW_POST_COMMENT, LOADING_POST_REPORTS, ADD_POST_REPORTS, REMOVE_POST_REPORT_FROM_QUEUE, LOADING_RECOMMENDATIONS, SET_RECOMMEDATIONS } from '../types';
+import { SET_POSTS, LOADING_DATA, LIKE_POST, UNLIKE_POST, NO_MORE_DATA, DELETE_POST, CLEAR_ERRORS, SET_ERRORS, CREATE_POST, LOADING_UI, SET_USER_SEARCH_SUGGESTIONS, LOADING_SEARCH_SUGGESTION_DATA, LOADING_SEARCH_RESULT_DATA, SET_USER_SEARCH_RESULTS, CLEAR_USER_SEARCH_SUGGESTIONS, LOADING_COMMENT_SECTION_DATA, SET_COMMENT_SECTION_DATA, ADD_NEW_POST_COMMENT, LOADING_POST_REPORTS, ADD_POST_REPORTS, REMOVE_POST_REPORT_FROM_QUEUE, LOADING_RECOMMENDATIONS, SET_RECOMMEDATIONS, LOADING_INSPECTED_USER, SET_INSPECTED_USER, LOADING_INSPECTED_USER_POSTS, SET_INSPECTED_USER_POSTS } from '../types';
 import axios from 'axios';
 
 export const getPostsPaginated = (url, startPosition, step) => (dispatch) => {
@@ -240,6 +240,46 @@ export const requestRecommendations = (userId) => (dispatch) =>{
             dispatch({
                 type: SET_RECOMMEDATIONS,
                 payload: []
+            })
+        })
+}
+
+export const loadInspectedUserDetails = (userId) => (dispatch) =>{
+    dispatch({ type: LOADING_INSPECTED_USER });
+
+    const url = '/users/findUserProfileById/'+userId;
+
+    axios.get(url)
+        .then(res => {
+            dispatch({
+                type: SET_INSPECTED_USER,
+                payload: res.data
+            });
+        })
+        .catch(err => {
+            dispatch({
+                type: SET_INSPECTED_USER,
+                payload: null
+            })
+        })
+}
+
+export const loadInspectedUserPosts = (idUser) => (dispatch) => {
+    dispatch({ type: LOADING_INSPECTED_USER_POSTS });
+
+    const url = '/posts/getAllUserPostsById/'+idUser;
+
+    axios.get(url)
+        .then(res => {
+            dispatch({
+                type: SET_INSPECTED_USER_POSTS,
+                payload: res.data
+            });
+        })
+        .catch(err => {
+            dispatch({
+                type: SET_INSPECTED_USER_POSTS,
+                payload: null
             })
         })
 }

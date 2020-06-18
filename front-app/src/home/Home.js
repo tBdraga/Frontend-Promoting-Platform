@@ -24,7 +24,8 @@ class Home extends Component {
 
     componentDidMount() {
         //load initial Posts
-        this.fetchPostRecommendations();
+
+        //this.fetchPostRecommendations();
     }
 
     componentWillReceiveProps(nextProps){
@@ -33,7 +34,6 @@ class Home extends Component {
                 idUser: nextProps.user.idUser,
                 userRole: nextProps.user.userRole
             })
-            console.log('miau miau', nextProps.user.userRole);
         }
     }
 
@@ -43,6 +43,8 @@ class Home extends Component {
 
         let url = '/users/getPostRecommendationsPaginated/' + this.props.user.idUser;
         
+        console.log("AADAHSDHASHDAHSD",this.props.user.idUser);
+
         if(this.props.data.hasMore){
             this.props.getPostsPaginated(url, startPosition, step);
         }else{

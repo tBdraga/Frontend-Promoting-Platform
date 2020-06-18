@@ -5,7 +5,7 @@ const initialState = {
     loading: false,
     credentials: {},
     likes: [],
-    idUser: 2,
+    idUser: null,
     followerList: [],
     followingList: [],
     followingCount: null,

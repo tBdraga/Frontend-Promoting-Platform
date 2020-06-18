@@ -63,10 +63,14 @@ const styles = (theme) => ({
         }
     },
     followersBtn: {
-        padding: '10px'
+        padding: '10px',
     },
     followingBtn: {
         padding: '10px'
+    },
+    websiteBtn: {
+        display: 'block',
+        maxWidth: '120px'
     },
     buttons: {
         textAllign: 'center',
@@ -90,7 +94,7 @@ class Profile extends Component {
 
     render() {
 
-        const { classes, user: { username, firstName, lastName, idUser, profileDescription, profilePicture, loading, authenticated, followingCount, followerCount } } = this.props;
+        const { classes, user: { username, firstName, lastName, idUser, profileDescription, profilePicture, loading, authenticated, followingCount, followerCount, websiteLink } } = this.props;
         
         const profileImage = !profilePicture ? (
             <img src={defaultProfile} className="profile-image"></img>
@@ -119,6 +123,12 @@ class Profile extends Component {
                         <MuiLink component={Link} to={`/users/${idUser}`} color="primary" variant="h5">
                             @{username}
                         </MuiLink>
+
+                        <hr></hr>
+
+                        <Button variant="outlined" color="primary" size="small" className={classes.websiteBtn} href={websiteLink}>
+                            Visit Website
+                        </Button>
 
                         <hr></hr>
 

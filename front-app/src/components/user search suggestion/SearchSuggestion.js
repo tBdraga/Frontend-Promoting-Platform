@@ -14,7 +14,8 @@ import Button from '@material-ui/core/Button';
 
 //redux
 import { connect } from 'react-redux';
-import { followUser, unfollowUser } from '../../redux/actions/userActions'
+import { followUser, unfollowUser } from '../../redux/actions/userActions';
+import { loadInspectedUserDetails, loadInspectedUserPosts } from '../../redux/actions/dataActions';
 
 const styles = {
     card: {
@@ -22,7 +23,7 @@ const styles = {
         backgroundColor: "red"
     }
 }
- 
+
 class SearchSuggestion extends Component {
     followedUser = () => {
         if (this.props.user.followingList && this.props.user.followingList.find(followedUser => followedUser.idUser === this.props.searchSuggestion.idUser)) {
@@ -38,7 +39,12 @@ class SearchSuggestion extends Component {
 
     unfollowUser = () => {
         this.props.unfollowUser(this.props.user.idUser, this.props.searchSuggestion.idUser);
-        console.log(this.props.user.idUser,this.props.searchSuggestion.idUser);
+        console.log(this.props.user.idUser, this.props.searchSuggestion.idUser);
+    }
+
+    renderInspectedUserDetails = () => {
+        this.props.loadInspectedUserDetails(this.props.searchSuggestion.idUser);
+        this.props.loadInspectedUserPosts(this.props.searchSuggestion.idUser);
     }
 
     render() {
@@ -62,7 +68,7 @@ class SearchSuggestion extends Component {
 
         return (
             <div className="suggestion-wrapper">
-                <Card className={classes.card} component={Link} to={`/users/${searchSuggestion.idUser}`}>
+                <Card className={classes.card} component={Link} to={`/profile/${searchSuggestion.idUser}`} onClick={this.renderInspectedUserDetails}>
                     <CardHeader
                         avatar={
                             <Avatar aria-label="recipe" src={`data:image/jpeg;base64,${searchSuggestion.profilePicture}`} className={classes.avatar} >
@@ -85,7 +91,9 @@ const mapStateToProps = (state) => ({
 
 const mapActionsToProps = {
     followUser,
-    unfollowUser
+    unfollowUser,
+    loadInspectedUserDetails,
+    loadInspectedUserPosts
 }
 
 SearchSuggestion.propTypes = {
@@ -93,6 +101,8 @@ SearchSuggestion.propTypes = {
     user: PropTypes.object.isRequired,
     followUser: PropTypes.func.isRequired,
     unfollowUser: PropTypes.func.isRequired,
+    loadInspectedUserDetails: PropTypes.func.isRequired,
+    loadInspectedUserPosts: PropTypes.func.isRequired
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(SearchSuggestion));
