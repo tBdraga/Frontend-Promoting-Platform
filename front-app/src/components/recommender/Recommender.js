@@ -46,7 +46,11 @@ const styles = {
     },
     listItem: {
         width: '500px'
-    }
+    },
+    dialogPaper: {
+        minHeight: '80vh',
+        maxHeight: '80vh',
+    },
 }
 
 class Recommender extends Component {
@@ -60,6 +64,9 @@ class Recommender extends Component {
     }
 
     suggestionSelected = (userSearchSuggestion) => {
+        this.setState({
+            dialogIsOpen: false
+        })
     }
 
     renderRecommendations = () => {
@@ -147,6 +154,7 @@ class Recommender extends Component {
                     onClose={this.handleClose}
                     fullWidth
                     maxWidth="sm"
+                    classes={{ paper: classes.dialogPaper }}
                 >
                     <Button onClick={this.handleClose} className={classes.closeButton}>
                         <CloseIcon></CloseIcon>

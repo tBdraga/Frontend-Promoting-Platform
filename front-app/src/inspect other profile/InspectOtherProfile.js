@@ -19,6 +19,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 //redux
 import { connect } from 'react-redux';
 import { loadInspectedUserDetails } from '../redux/actions/dataActions';
+import { followUser, unfollowUser } from '../redux/actions/userActions';
 
 const styles = (theme) => ({
     paper: {
@@ -83,21 +84,59 @@ const styles = (theme) => ({
 });
 
 class InspectOtherProfile extends Component {
+    followedUser = () => {
+        const { user: { followingList }, data: { inspectedUserDetails, loadingInspectedUser } } = this.props;
+
+        if (!loadingInspectedUser && followingList && followingList.find(followedUser => followedUser.idUser === inspectedUserDetails.idUser)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    followUser = () => {
+        const { data: { inspectedUserDetails }, user: { idUser } } = this.props;
+
+        this.props.followUser(idUser, inspectedUserDetails.idUser);
+    }
+
+    unfollowUser = () => {
+        const { data: { inspectedUserDetails }, user: { idUser } } = this.props;
+
+        this.props.unfollowUser(idUser, inspectedUserDetails.idUser);
+    }
+
     render() {
-        const { classes, data: { inspectedUserDetails, inspectedUserPosts, loadingInspectedUserPosts, loadingInspectedUser }, user: { loading, authenticated } } = this.props;
+        const { classes, data: { inspectedUserDetails, inspectedUserPosts, loadingInspectedUserPosts, loadingInspectedUser }, user: { authenticated } } = this.props;
+
+        let followButton = !authenticated ? (
+            <Button size="small" variant="contained" color="primary" component={Link} to="/login">
+                Login
+            </Button>
+        ) : (
+                this.followedUser() ? (
+                    <Button size="small" variant="contained" color="primary" onClick={this.unfollowUser}>
+                        Unfollow
+                    </Button>
+                ) : (
+                        <Button size="small" variant="contained" color="primary" onClick={this.followUser}>
+                            Follow
+                        </Button>
+                    )
+            )
 
         let inspectedUserProfile = !loadingInspectedUser ? (
             <Paper className={classes.paper}>
                 <div className={classes.profile}>
                     <div className="image-wrapper">
                         <img src={`data:image/jpeg;base64,${inspectedUserDetails.profilePicture}`} alt="profile" className="profile-image"></img>
-                    
+
                         <Button size="medium" className={classes.followersBtn}>
-                            {inspectedUserDetails.followerCount+' followers'}
+                            {inspectedUserDetails.followerCount + ' followers'}
                         </Button>
 
                         <Button size="medium" className={classes.followingBtn}>
-                            {inspectedUserDetails.followingCount+' following'}
+                            {inspectedUserDetails.followingCount + ' following'}
                         </Button>
                     </div>
 
@@ -116,6 +155,9 @@ class InspectOtherProfile extends Component {
 
                         {inspectedUserDetails.profileDescription && <Typography variant="body2" >{inspectedUserDetails.profileDescription}</Typography>}
 
+                        <hr></hr>
+
+                        {followButton}
                     </div>
                 </div>
             </Paper>
@@ -136,10 +178,10 @@ class InspectOtherProfile extends Component {
                     </div>
                 </Paper>
             )
-        
+
         let inspectUserPosts = !loadingInspectedUserPosts && inspectedUserPosts ? (
             inspectedUserPosts.map(post => <Post post={post}></Post>)
-        ) :(<p>Loading posts...</p>)
+        ) : (<p>Loading posts...</p>)
 
         return (
             <Grid container spacing={3}>
@@ -157,11 +199,13 @@ class InspectOtherProfile extends Component {
 
 const mapStateToProps = (state) => ({
     data: state.data,
-    user: state.data
+    user: state.user
 })
 
 const mapActionsToPros = {
-    loadInspectedUserDetails
+    loadInspectedUserDetails,
+    followUser,
+    unfollowUser
 };
 
 InspectOtherProfile.propTypes = {
@@ -169,6 +213,8 @@ InspectOtherProfile.propTypes = {
     data: PropTypes.object.isRequired,
     user: PropTypes.object.isRequired,
     loadInspectedUserDetails: PropTypes.func.isRequired,
+    followUser: PropTypes.func.isRequired,
+    unfollowUser: PropTypes.func.isRequired
 }
 
 export default connect(mapStateToProps, mapActionsToPros)(withStyles(styles)(InspectOtherProfile));
