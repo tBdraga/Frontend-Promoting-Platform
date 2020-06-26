@@ -6,6 +6,7 @@ import uploadIcon from '../../assets/uploadIcon.png'
 //redux
 import { connect } from 'react-redux';
 import { createPost } from '../../redux/actions/dataActions';
+import { registerPostMention } from '../../redux/actions/userActions';
 
 //MUI
 import Button from '@material-ui/core/Button';
@@ -159,7 +160,10 @@ class CreatePost extends Component {
         }
 
         this.props.createPost(formData, this.state.companyTag, this.state.postDescription, this.props.user.idUser);
-    
+        
+        //register post mention
+        this.props.registerPostMention(this.state.companyTag);
+
         this.handleClose();
     }
 
@@ -281,13 +285,15 @@ const mapStateToProps = (state) => ({
 })
 
 const mapActionsToPros = {
-    createPost
+    createPost,
+    registerPostMention
 };
 
 CreatePost.propTypes = {
     createPost: PropTypes.func.isRequired,
     UI: PropTypes.object.isRequired,
-    user: PropTypes.object.isRequired
+    user: PropTypes.object.isRequired,
+    registerPostMention: PropTypes.func.isRequired
 }
 
 export default connect(mapStateToProps, mapActionsToPros)(withStyles(styles)(CreatePost));

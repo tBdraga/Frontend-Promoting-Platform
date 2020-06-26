@@ -141,3 +141,25 @@ export const unfollowUser = (idUserFrom, idUserTo) => (dispatch) => {
         )
         .catch(err => console.log(err))
 }
+
+export const registerWebsiteVisit = (idUser) => (dispatch) =>{
+    const url = '/visits/add/'+idUser;
+
+    axios.post(url)
+        .then(res => {
+            console.log(res);
+        }
+        )
+        .catch(err => console.log(err))
+}
+
+export const registerPostMention = (username) => (dispatch) => {
+    const url = '/mentions/add/'+username;
+
+    axios.post(url)
+        .then(res => {
+            console.log(res);
+        }
+        )
+        .catch(err => console.log(err))
+}

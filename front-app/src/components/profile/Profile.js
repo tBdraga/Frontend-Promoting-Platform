@@ -18,6 +18,7 @@ import Typography from '@material-ui/core/Typography';
 
 //redux
 import { connect } from 'react-redux';
+import { registerWebsiteVisit } from '../../redux/actions/userActions';
 
 const styles = (theme) => ({
     paper: {
@@ -92,15 +93,21 @@ const styles = (theme) => ({
 
 class Profile extends Component {
 
+    registerWebsiteVisit = () => {
+        const { user: { idUser } } = this.props;
+        
+        this.props.registerWebsiteVisit(idUser);
+    }
+
     render() {
 
         const { classes, user: { username, firstName, lastName, idUser, profileDescription, profilePicture, loading, authenticated, followingCount, followerCount, websiteLink } } = this.props;
-        
+
         const profileImage = !profilePicture ? (
             <img src={defaultProfile} className="profile-image"></img>
         ) : (
-            <img src={`data:image/jpeg;base64,${profilePicture}`} alt="profile" className="profile-image"></img>
-        )
+                <img src={`data:image/jpeg;base64,${profilePicture}`} alt="profile" className="profile-image"></img>
+            )
 
         let profileMarkup = !loading ? (authenticated ? (
             <Paper className={classes.paper}>
@@ -109,11 +116,11 @@ class Profile extends Component {
                         {profileImage}
 
                         <Button size="medium" className={classes.followersBtn}>
-                            {followerCount+' followers'}
+                            {followerCount + ' followers'}
                         </Button>
 
                         <Button size="medium" className={classes.followingBtn}>
-                            {followingCount+' following'}
+                            {followingCount + ' following'}
                         </Button>
                     </div>
 
@@ -126,7 +133,7 @@ class Profile extends Component {
 
                         <hr></hr>
 
-                        <Button variant="outlined" color="primary" size="small" className={classes.websiteBtn} href={websiteLink}>
+                        <Button variant="outlined" color="primary" size="small" className={classes.websiteBtn} href={websiteLink} onClick={this.registerWebsiteVisit()}>
                             Visit Website
                         </Button>
 
@@ -161,9 +168,14 @@ const mapStateToProps = (state) => ({
     user: state.user
 })
 
-Profile.propTypes = {
-    user: PropTypes.object.isRequired,
-    classes: PropTypes.object.isRequired
+const mapActionsToProps = {
+    registerWebsiteVisit
 }
 
-export default connect(mapStateToProps)(withStyles(styles)(Profile));
+Profile.propTypes = {
+    user: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired,
+    registerWebsiteVisit: PropTypes.func.isRequired
+}
+
+export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(Profile));

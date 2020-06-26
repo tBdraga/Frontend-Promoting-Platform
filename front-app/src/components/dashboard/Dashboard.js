@@ -123,16 +123,108 @@ class Dashboard extends Component {
         }
     }
 
+    loadWebsiteVisitChartData = () => {
+        const { user: { loading, authenticated, websiteVisits } } = this.props;
+
+        let websiteVisitsChartData = {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            datasets: [
+                {
+                    label: 'Website visits',
+                    data: [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)'
+                }
+            ]
+        }
+
+        if (!loading && authenticated && websiteVisits) {
+            var chartWebsiteLablesLen = websiteVisitsChartData.labels.length;
+            
+            var websiteVisitsLen = websiteVisits.length;
+
+            for (var i = 0; i < chartWebsiteLablesLen; i++) {
+                for (var j = 0; j < websiteVisitsLen; j++) {
+                    if (websiteVisitsChartData.labels[i] === websiteVisits[j].month) {
+                        websiteVisitsChartData.datasets[0].data[i] = websiteVisits[j].visits;
+                    }
+                }
+            }
+        }
+        
+        return websiteVisitsChartData;
+    }
+
+    loadPostMentionsChartData = () => {
+        const { user: { loading, authenticated, postMentions } } = this.props;
+
+        let postMentionsChartData = {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            datasets: [
+                {
+                    label: 'Post mentions',
+                    data: [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)'
+                }
+            ]
+        }
+
+        if (!loading && authenticated && postMentions) {
+            var chartWebsiteLablesLen = postMentionsChartData.labels.length;
+            
+            var postMentionsLen = postMentions.length;
+
+            for (var i = 0; i < chartWebsiteLablesLen; i++) {
+                for (var j = 0; j < postMentionsLen; j++) {
+                    if (postMentionsChartData.labels[i] === postMentions[j].month) {
+                        postMentionsChartData.datasets[0].data[i] = postMentions[j].visits;
+                    }
+                }
+            }
+        }
+        
+        return postMentionsChartData;
+    }
+
     render() {
         const { classes, user: { loading, authenticated, userRole } } = this.props;
 
-        let dashboardMarkup = !loading ? (authenticated ? ( userRole === 'BUSINESS_OWNER' ? (
+        let websiteVisitsChartData = this.loadWebsiteVisitChartData();
+
+        let postMentionsChartData = this.loadPostMentionsChartData();
+
+        let dashboardMarkup = !loading ? (authenticated ? (userRole === 'BUSINESS_OWNER' ? (
             <Paper className={classes.paper}>
                 <div className={classes.dashboard}>
 
                     <div className={classes.chartWebsiteVisits}>
                         <Line
-                            data={this.state.chartDataWebsiteVisits}
+                            data={websiteVisitsChartData}
                             height={50}
                             width={100}
                             options={{
@@ -154,7 +246,7 @@ class Dashboard extends Component {
 
                     <div className={classes.chartPostMentions}>
                         <Line
-                            data={this.state.chartDataPostTags}
+                            data={postMentionsChartData}
                             height={50}
                             width={100}
                             options={{
@@ -195,7 +287,7 @@ class Dashboard extends Component {
                     </div>
                 </div>
             </Paper>
-        ) : (<p>Dashboard available only for Business Owners</p>)   
+        ) : (<p>Dashboard available only for Business Owners</p>)
         ) : (
                 <Paper className={classes.paper}>
                     <Typography variant="body2" align="center">Not logged in!</Typography>

@@ -19,7 +19,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 //redux
 import { connect } from 'react-redux';
 import { loadInspectedUserDetails } from '../redux/actions/dataActions';
-import { followUser, unfollowUser } from '../redux/actions/userActions';
+import { followUser, unfollowUser, registerWebsiteVisit } from '../redux/actions/userActions';
 
 const styles = (theme) => ({
     paper: {
@@ -106,6 +106,12 @@ class InspectOtherProfile extends Component {
         this.props.unfollowUser(idUser, inspectedUserDetails.idUser);
     }
 
+    registerWebsiteVisit = () => {
+        const { data: { inspectedUserDetails } } = this.props;
+
+        this.props.registerWebsiteVisit(inspectedUserDetails.idUser);
+    }
+
     render() {
         const { classes, data: { inspectedUserDetails, inspectedUserPosts, loadingInspectedUserPosts, loadingInspectedUser }, user: { authenticated } } = this.props;
 
@@ -157,6 +163,10 @@ class InspectOtherProfile extends Component {
 
                         <hr></hr>
 
+                        <Button variant="outlined" color="primary" size="small" className={classes.websiteBtn} href={inspectedUserDetails.websiteLink} onClick={this.registerWebsiteVisit()}>
+                            Visit Website
+                        </Button>
+
                         {followButton}
                     </div>
                 </div>
@@ -205,7 +215,8 @@ const mapStateToProps = (state) => ({
 const mapActionsToPros = {
     loadInspectedUserDetails,
     followUser,
-    unfollowUser
+    unfollowUser,
+    registerWebsiteVisit
 };
 
 InspectOtherProfile.propTypes = {
@@ -214,7 +225,8 @@ InspectOtherProfile.propTypes = {
     user: PropTypes.object.isRequired,
     loadInspectedUserDetails: PropTypes.func.isRequired,
     followUser: PropTypes.func.isRequired,
-    unfollowUser: PropTypes.func.isRequired
+    unfollowUser: PropTypes.func.isRequired,
+    registerWebsiteVisit: PropTypes.func.isRequired
 }
 
 export default connect(mapStateToProps, mapActionsToPros)(withStyles(styles)(InspectOtherProfile));
